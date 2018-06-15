@@ -1,0 +1,23 @@
+{
+  "name": "list.am",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "npm run build --prefix front/ && node ./bin/www"
+  },
+  "dependencies": {
+    "bootstrap": "^4.1.1",
+    "cookie-parser": "~1.4.3",
+    "cors": "^2.8.4",
+    "debug": "~2.6.9",
+    "email-validator": "^2.0.4",
+    "express": "~4.16.0",
+    "http-errors": "~1.6.2",
+    "is-image": "^2.0.0",
+    "morgan": "~1.9.0",
+    "mysql": "^2.15.0",
+    "rand-token": "^0.4.0",
+    "react-input-mask": "^2.0.1",
+    "sha256": "^0.2.0"
+  }
+}

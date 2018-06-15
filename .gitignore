@@ -1,0 +1,8 @@
+node_modules
+.idea
+
+front/*
+!front/public/
+!front/src/
+!front/package.json
+!front/package-lock.json

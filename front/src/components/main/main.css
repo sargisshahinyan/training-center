@@ -1,0 +1,10 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+main {
+    position: relative;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
