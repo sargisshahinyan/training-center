@@ -66,8 +66,7 @@ export default class Users extends React.Component {
 		UsersModel.getUser(id).then(user => {
 			Photos.convertUrlToImage(user.avatar).then(img => {
 				user.avatar = img;
-				this.toggleForm(null, id, user);
-			});
+			}, () => {}).then(() => this.toggleForm(null, id, user));
 		});
 	}
 	

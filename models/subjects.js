@@ -1,9 +1,9 @@
 const conn = require('./connection');
 
-const table = '`students`';
+const table = '`subjects`';
 
-class Students {
-	static getStudents(config = {}) {
+class Subjects {
+	static getSubjects(config = {}) {
 		const defaultConfigs = {
 			limit: 20,
 			offset: 0
@@ -22,60 +22,60 @@ class Students {
 		}
 		
 		return new Promise((resolve) => {
-			conn.query(`SELECT id, name, surname FROM ${table} LIMIT ?, ?`,
-				[config['offset'], config['limit']], function (err, students) {
+			conn.query(`SELECT id, name FROM ${table} LIMIT ?, ?`,
+				[config['offset'], config['limit']], function (err, subjects) {
 					if(err) throw err;
 					
-					resolve(students);
+					resolve(subjects);
 				});
 		});
 	}
 	
-	static getStudent(id){
+	static getSubject(id){
 		return new Promise((resolve) => {
-			conn.query(`SELECT * FROM ${table} WHERE id = ?`, [id], (err, students) => {
+			conn.query(`SELECT * FROM ${table} WHERE id = ?`, [id], (err, subjects) => {
 				if(err) throw err;
 				
-				let student = students[0] || null;
+				let subject = subjects[0] || null;
 				
-				if(student) {
-					delete student.password;
+				if(subject) {
+					delete subject.password;
 				}
 				
-				resolve(student);
+				resolve(subject);
 			});
 		});
 	}
 	
-	static addStudent(data) {
+	static addSubject(data) {
 		return new Promise((resolve, reject) => {
 			conn.query(`INSERT INTO ${table} SET ?`, data, (err, res) => {
 				if(err) throw err;
 				
-				Students.getStudent(res.insertId).then(student => {
-					student ? resolve(student) : reject({
-						message: 'Invalid student id'
+				Subjects.getSubject(res.insertId).then(subject => {
+					subject ? resolve(subject) : reject({
+						message: 'Invalid subject id'
 					});
 				}, reject);
 			});
 		});
 	}
 	
-	static editStudent(id, data) {
+	static editSubject(id, data) {
 		return new Promise((resolve, reject) => {
 			conn.query(`UPDATE ${table} SET ? WHERE id = ?`, [data, id], (err) => {
 				if(err) throw err;
 				
-				Students.getStudent(id).then(student => {
-					student ? resolve(student) : reject({
-						message: 'Invalid student id'
+				Subjects.getSubject(id).then(subject => {
+					subject ? resolve(subject) : reject({
+						message: 'Invalid subject id'
 					});
 				}, reject);
 			});
 		});
 	}
 	
-	static deleteStudent(id) {
+	static deleteSubject(id) {
 		return new Promise((resolve) => {
 			conn.query(`DELETE FROM ${table} WHERE id = ?`, [id], (err) => {
 				if(err) throw err;
@@ -86,4 +86,4 @@ class Students {
 	}
 }
 
-module.exports = Students;
+module.exports = Subjects;

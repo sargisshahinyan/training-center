@@ -1,6 +1,6 @@
 class Photos {
 	static convertUrlToImage(url) {
-		return new Promise((resolve) => {
+		return new Promise((resolve, reject) => {
 			let img = new Image();
 			img.crossOrigin = 'Anonymous';
 			img.onload = function() {
@@ -13,6 +13,7 @@ class Photos {
 				dataURL = canvas.toDataURL();
 				resolve(dataURL);
 			};
+			img.onerror = reject;
 			img.src = url;
 		});
 	}

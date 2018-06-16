@@ -1,9 +1,9 @@
 const conn = require('./connection');
 
-const table = '`students`';
+const table = '`groups`';
 
-class Students {
-	static getStudents(config = {}) {
+class Groups {
+	static getGroups(config = {}) {
 		const defaultConfigs = {
 			limit: 20,
 			offset: 0
@@ -22,60 +22,60 @@ class Students {
 		}
 		
 		return new Promise((resolve) => {
-			conn.query(`SELECT id, name, surname FROM ${table} LIMIT ?, ?`,
-				[config['offset'], config['limit']], function (err, students) {
+			conn.query(`SELECT id, name FROM ${table} LIMIT ?, ?`,
+				[config['offset'], config['limit']], function (err, groups) {
 					if(err) throw err;
 					
-					resolve(students);
+					resolve(groups);
 				});
 		});
 	}
 	
-	static getStudent(id){
+	static getGroup(id){
 		return new Promise((resolve) => {
-			conn.query(`SELECT * FROM ${table} WHERE id = ?`, [id], (err, students) => {
+			conn.query(`SELECT * FROM ${table} WHERE id = ?`, [id], (err, groups) => {
 				if(err) throw err;
 				
-				let student = students[0] || null;
+				let group = groups[0] || null;
 				
-				if(student) {
-					delete student.password;
+				if(group) {
+					delete group.password;
 				}
 				
-				resolve(student);
+				resolve(group);
 			});
 		});
 	}
 	
-	static addStudent(data) {
+	static addGroup(data) {
 		return new Promise((resolve, reject) => {
 			conn.query(`INSERT INTO ${table} SET ?`, data, (err, res) => {
 				if(err) throw err;
 				
-				Students.getStudent(res.insertId).then(student => {
-					student ? resolve(student) : reject({
-						message: 'Invalid student id'
+				Groups.getGroup(res.insertId).then(group => {
+					group ? resolve(group) : reject({
+						message: 'Invalid group id'
 					});
 				}, reject);
 			});
 		});
 	}
 	
-	static editStudent(id, data) {
+	static editGroup(id, data) {
 		return new Promise((resolve, reject) => {
 			conn.query(`UPDATE ${table} SET ? WHERE id = ?`, [data, id], (err) => {
 				if(err) throw err;
 				
-				Students.getStudent(id).then(student => {
-					student ? resolve(student) : reject({
-						message: 'Invalid student id'
+				Groups.getGroup(id).then(group => {
+					group ? resolve(group) : reject({
+						message: 'Invalid group id'
 					});
 				}, reject);
 			});
 		});
 	}
 	
-	static deleteStudent(id) {
+	static deleteGroup(id) {
 		return new Promise((resolve) => {
 			conn.query(`DELETE FROM ${table} WHERE id = ?`, [id], (err) => {
 				if(err) throw err;
@@ -86,4 +86,4 @@ class Students {
 	}
 }
 
-module.exports = Students;
+module.exports = Groups;

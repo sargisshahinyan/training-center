@@ -2,13 +2,13 @@ const express= require('express');
 const router = express.Router();
 
 // models
-const Students = require(appRoot + '/models/students');
+const Groups = require(appRoot + '/models/groups');
 
 // helpers
 const helpers = require(appRoot + '/libs/helpers');
 
-// data for students
-const fields = ['name', 'surname', 'phone'];
+// data for groups
+const fields = ['name'];
 
 // middleware
 const authCheckingMiddleware = require(`${appRoot}/middlewares/authCheckingMiddleware`);
@@ -25,7 +25,7 @@ router.get('/', function (req, res) {
 		}
 	});
 	
-	Students.getStudents(data).then(students => res.json(students));
+	Groups.getGroups(data).then(groups => res.json(groups));
 });
 
 router.get('/:id', function(req, res) {
@@ -38,7 +38,7 @@ router.get('/:id', function(req, res) {
 		return;
 	}
 	
-	Students.getStudent(id).then(student => res.json(student), err => res.status(404).json(err));
+	Groups.getGroup(id).then(group => res.json(group), err => res.status(404).json(err));
 });
 
 router.post('/', function (req, res) {
@@ -58,9 +58,9 @@ router.post('/', function (req, res) {
 	
 	fields.forEach(field => data[field] = req.body[field]);
 	
-	Students.addStudent(data).then(student => {
+	Groups.addGroup(data).then(group => {
 		res.status(201).json({
-			'message': 'Student has been created'
+			'message': 'Group has been created'
 		});
 	}, err => res.status(400).json(err));
 });
@@ -91,9 +91,9 @@ router.put('/:id', function (req, res) {
 	
 	fields.forEach(field => data[field] = req.body[field]);
 	
-	Students.editStudent(id, data).then(student => {
+	Groups.editGroup(id, data).then(group => {
 		res.json({
-			'message': 'Student has been updated'
+			'message': 'Group has been updated'
 		});
 	}, err => res.status(400).json(err));
 });
@@ -107,9 +107,9 @@ router.delete('/:id', function (req, res) {
 		});
 		return;
 	}
-		
-	Students.deleteStudent(id).then(id => res.json({
-		'message': 'Student deleted successfully'
+	
+	Groups.deleteGroup(id).then(id => res.json({
+		'message': 'Group deleted successfully'
 	}), err => res.status(400).json(err));
 });
 

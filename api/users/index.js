@@ -2,11 +2,11 @@ const express= require('express');
 const router = express.Router();
 
 // models
-const Users = require('../../models/users');
-const Photos = require('../../models/photos');
+const Users = require(appRoot + '/models/users');
+const Photos = require(appRoot + '/models/photos');
 
 // helpers
-const helpers = require('../../libs/helpers');
+const helpers = require(appRoot + '/libs/helpers');
 const emailValidator = require('email-validator');
 const sha = require('sha256');
 

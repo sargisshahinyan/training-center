@@ -1,0 +1,22 @@
+{
+  "dev": {
+    "driver": "mysql",
+    "user": "root",
+    "password": "",
+    "database": "trainingCenter"
+  },
+
+  "test": {
+    "driver": "mysql",
+    "user": "root",
+    "password": "",
+    "database": "trainingCenter"
+  },
+
+  "prod": {
+    "driver": "mysql",
+    "user": "root",
+    "password": "",
+    "database": "trainingCenter"
+  }
+}

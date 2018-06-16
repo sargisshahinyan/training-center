@@ -2,13 +2,13 @@ const express= require('express');
 const router = express.Router();
 
 // models
-const Students = require(appRoot + '/models/students');
+const Subjects = require(appRoot + '/models/subjects');
 
 // helpers
 const helpers = require(appRoot + '/libs/helpers');
 
-// data for students
-const fields = ['name', 'surname', 'phone'];
+// data for subjects
+const fields = ['name'];
 
 // middleware
 const authCheckingMiddleware = require(`${appRoot}/middlewares/authCheckingMiddleware`);
@@ -25,7 +25,7 @@ router.get('/', function (req, res) {
 		}
 	});
 	
-	Students.getStudents(data).then(students => res.json(students));
+	Subjects.getSubjects(data).then(subjects => res.json(subjects));
 });
 
 router.get('/:id', function(req, res) {
@@ -38,7 +38,7 @@ router.get('/:id', function(req, res) {
 		return;
 	}
 	
-	Students.getStudent(id).then(student => res.json(student), err => res.status(404).json(err));
+	Subjects.getSubject(id).then(subject => res.json(subject), err => res.status(404).json(err));
 });
 
 router.post('/', function (req, res) {
@@ -58,9 +58,9 @@ router.post('/', function (req, res) {
 	
 	fields.forEach(field => data[field] = req.body[field]);
 	
-	Students.addStudent(data).then(student => {
+	Subjects.addSubject(data).then(subject => {
 		res.status(201).json({
-			'message': 'Student has been created'
+			'message': 'Subject has been created'
 		});
 	}, err => res.status(400).json(err));
 });
@@ -91,9 +91,9 @@ router.put('/:id', function (req, res) {
 	
 	fields.forEach(field => data[field] = req.body[field]);
 	
-	Students.editStudent(id, data).then(student => {
+	Subjects.editSubject(id, data).then(subject => {
 		res.json({
-			'message': 'Student has been updated'
+			'message': 'Subject has been updated'
 		});
 	}, err => res.status(400).json(err));
 });
@@ -107,9 +107,9 @@ router.delete('/:id', function (req, res) {
 		});
 		return;
 	}
-		
-	Students.deleteStudent(id).then(id => res.json({
-		'message': 'Student deleted successfully'
+	
+	Subjects.deleteSubject(id).then(id => res.json({
+		'message': 'Subject deleted successfully'
 	}), err => res.status(400).json(err));
 });
 
