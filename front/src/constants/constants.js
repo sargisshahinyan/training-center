@@ -5,7 +5,7 @@ import Students from '../components/students/students';
 import Subjects from '../components/subjects/subjects';
 import Groups from '../components/groups/groups';
 
-export const baseUrl = 'http://localhost:3000/api';
+export const baseUrl = 'https://colibri-training.herokuapp.com/api';
 export const routes = [
 	{
 		path: '/home', name: 'Home', component: Home
