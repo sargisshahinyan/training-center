@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "npm run build --prefix front/ && node ./bin/www",
+    "start": "npm install --prefix front/ && npm run build --prefix front/ && node ./bin/www",
     "postinstall": "node node_modules/db-migrate/bin/db-migrate up -c 3"
   },
   "dependencies": {
