@@ -209,28 +209,34 @@ router.put('/:id', function (req, res) {
 		delete data['password-retype'];
 	}
 	
-	if(data.avatar) {
-		Users.getUserById(id).then((user) => {
-			const fileName = `/img/avatars/${sha(Date.now().toString())}`;
-			const filePath = `${appRoot}/front/build`;
+	Users.getUserById(id).then((user) => {
+		const fileName = `/img/avatars/${sha(Date.now().toString())}`;
+		const filePath = `${appRoot}/front/build`;
+		
+		if(user.avatar) {
 			Photos.deletePhoto(filePath, user.avatar);
-			
-			Photos.createPhoto(fileName, filePath, data.avatar).then(img => {
+		}
+		
+		let promise = Promise.resolve();
+		
+		if(data.avatar) {
+			promise = Photos.createPhoto(fileName, filePath, data.avatar).then(img => {
 				data.avatar = img;
-				editUser(id, data);
-			}, err => res.status(403).json(err));
-		});
-	} else {
-		editUser(id, data);
-	}
-	
-	function editUser(id, data) {
-		Users.editUser(id, data).then(user => {
-			res.json({
-				'message': 'User has been updated'
+			}, err => {
+				console.error(err);
+				data.avatar = null;
 			});
-		}, err => res.status(400).json(err));
-	}
+		}
+		
+		promise.then(() => {
+			Users.editUser(id, data).then(() => {
+				res.json({
+					'message': 'User has been updated'
+				});
+			}, err => res.status(400).json(err));
+		});
+		
+	});
 });
 
 router.delete('/:id', function (req, res) {

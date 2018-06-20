@@ -7,7 +7,9 @@ const logger = require('morgan');
 const app = express();
 global.appRoot = path.resolve(__dirname);
 
-const staticRoutes = ['/', '/home', '/users'];
+const staticRoutes = [
+	'/home', '/users', '/students', '/subjects', '/groups', '/timetable'
+];
 const helpers = require('./libs/helpers');
 
 app.use(logger('dev'));
@@ -21,10 +23,9 @@ app.use(function (req, res, next) {
 	helpers.trim(req.body);
 	next();
 });
-
-
 app.use(express.static(path.join(__dirname, 'front', 'build')));
 
+staticRoutes.forEach(route => app.use(route, express.static(path.join(__dirname, 'front', 'build', 'index.html'))));
 
 app.use('/api', require('./api'));
 
