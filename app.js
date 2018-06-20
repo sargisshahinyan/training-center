@@ -22,9 +22,9 @@ app.use(function (req, res, next) {
 	next();
 });
 
-//staticRoutes.forEach(route => {
-	app.use(/*route,*/ express.static(path.join(__dirname, 'front', 'build')));
-//});
+
+app.use(express.static(path.join(__dirname, 'front', 'build')));
+
 
 app.use('/api', require('./api'));
 

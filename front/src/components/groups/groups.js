@@ -14,9 +14,12 @@ import Confirm from '../templates/modals/confirm/confirm'
 
 // Models
 import GroupsModel from "../../models/groups";
+import UsersModel from '../../models/users';
+import SubjectsModel from '../../models/subjects';
+import StudentsModel from '../../models/students';
 
 export default class Groups extends React.Component {
-	fields = ['name'];
+	fields = ['name', 'userId', 'subjectId'];
 	
 	constructor(props) {
 		super(props);
@@ -35,7 +38,10 @@ export default class Groups extends React.Component {
 				message: '',
 				action: '',
 				title: 'Confirm'
-			}
+			},
+			students: [],
+			users: [],
+			subjects: []
 		};
 		
 		this.toggleForm = this.toggleForm.bind(this);
@@ -49,6 +55,17 @@ export default class Groups extends React.Component {
 		this.confirm = this.confirm.bind(this);
 		
 		this.getGroups();
+		this.init();
+	}
+	
+	init() {
+		Promise.all([UsersModel.getUsers(), SubjectsModel.getSubjects(), StudentsModel.getStudents()]).then(result => {
+			const [users, subjects, students] = result;
+			
+			this.setState({
+				users, students, subjects
+			});
+		});
 	}
 	
 	editGroup(e) {
@@ -154,6 +171,18 @@ export default class Groups extends React.Component {
 						<FormGroup>
 							<Label for="name">Name</Label>
 							<Input value={this.state.groupData.name} onChange={e => this.collectState('name', e.target.value)} type="text" name="name" id="name" placeholder="Name" />
+						</FormGroup>
+						<FormGroup>
+							<Label for="subjectId">Subject</Label>
+							<Input value={this.state.groupData.subjectId} onChange={e => this.collectState('subjectId', e.target.value)} type="select" name="subjectId" id="subjectId" placeholder="Subject">
+								{this.state.subjects.map(subject => <option key={subject.id} value={subject.id}>{subject.name}</option>)}
+							</Input>
+						</FormGroup>
+						<FormGroup>
+							<Label for="userId">Teacher</Label>
+							<Input value={this.state.groupData.userId} onChange={e => this.collectState('userId', e.target.value)} type="select" name="userId" id="userId" placeholder="Teacher">
+								{this.state.users.map(user => <option key={user.id} value={user.id}>{user.name + ' ' + user.surname}</option>)}
+							</Input>
 						</FormGroup>
 					</Form>
 				</ModalBody>

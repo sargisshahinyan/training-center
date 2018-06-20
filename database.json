@@ -1,22 +1,25 @@
 {
   "dev": {
     "driver": "mysql",
-    "user": "root",
-    "password": "",
-    "database": "trainingCenter"
+    "host": "q57yawiwmnaw13d2.cbetxkdyhwsb.us-east-1.rds.amazonaws.com",
+    "user": "l3tcli3cm4ix2ups",
+    "password": "u1mdtclrbbljs3z7",
+    "database": "to39x2m6kfoxl7p1"
   },
 
   "test": {
     "driver": "mysql",
-    "user": "root",
-    "password": "",
-    "database": "trainingCenter"
+    "host": "q57yawiwmnaw13d2.cbetxkdyhwsb.us-east-1.rds.amazonaws.com",
+    "user": "l3tcli3cm4ix2ups",
+    "password": "u1mdtclrbbljs3z7",
+    "database": "to39x2m6kfoxl7p1"
   },
 
   "prod": {
     "driver": "mysql",
-    "user": "root",
-    "password": "",
-    "database": "trainingCenter"
+    "host": "q57yawiwmnaw13d2.cbetxkdyhwsb.us-east-1.rds.amazonaws.com",
+    "user": "l3tcli3cm4ix2ups",
+    "password": "u1mdtclrbbljs3z7",
+    "database": "to39x2m6kfoxl7p1"
   }
 }
