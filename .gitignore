@@ -2,6 +2,7 @@ node_modules
 .idea
 
 front/*
+!front/build/
 !front/public/
 !front/src/
 !front/package.json
