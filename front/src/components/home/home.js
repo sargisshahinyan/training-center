@@ -4,6 +4,6 @@ import './home.css';
 
 export default class Home extends React.Component {
 	render() {
-		return <h1>Հօմե</h1>;
+		return <h1>Home page</h1>;
 	}
 }

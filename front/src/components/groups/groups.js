@@ -3,7 +3,7 @@ import './groups.css';
 // for modal
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 // for forms
-import { Form, FormGroup, Label, Input } from 'reactstrap';
+import { Form, FormGroup, Label, Input, Badge } from 'reactstrap';
 // for list
 import { ListGroup, ListGroupItem } from 'reactstrap';
 
@@ -19,7 +19,7 @@ import SubjectsModel from '../../models/subjects';
 import StudentsModel from '../../models/students';
 
 export default class Groups extends React.Component {
-	fields = ['name', 'userId', 'subjectId'];
+	fields = ['name', 'userId', 'subjectId', 'studentId'];
 	
 	constructor(props) {
 		super(props);
@@ -53,6 +53,7 @@ export default class Groups extends React.Component {
 		this.deleteGroup = this.deleteGroup.bind(this);
 		
 		this.confirm = this.confirm.bind(this);
+		this.selectStudent = this.selectStudent.bind(this);
 		
 		this.getGroups();
 		this.init();
@@ -60,10 +61,12 @@ export default class Groups extends React.Component {
 	
 	init() {
 		Promise.all([UsersModel.getUsers(), SubjectsModel.getSubjects(), StudentsModel.getStudents()]).then(result => {
-			const [users, subjects, students] = result;
+			let [users, subjects, students] = result;
+			
+			students.forEach(student => student.selected = false);
 			
 			this.setState({
-				users, students, subjects
+				users, subjects, students
 			});
 		});
 	}
@@ -157,6 +160,39 @@ export default class Groups extends React.Component {
 		this.toggleConfirm();
 	}
 	
+	selectStudent() {
+		this.setState((prevState) => {
+			const students = prevState.students.map(student => {
+				if(student.id === parseInt(prevState.groupData.studentId)) {
+					student.selected = true;
+				}
+				
+				return student;
+			});
+			
+			return {
+				students,
+				groupData: Object.assign(prevState.groupData, { studentId: ''})
+			};
+		});
+	}
+	
+	deselectStudent(id) {
+		this.setState((prevState) => {
+			const students = prevState.students.map(student => {
+				if(student.id === id) {
+					student.selected = false;
+				}
+				
+				return student;
+			});
+			
+			return {
+				students
+			};
+		});
+	}
+	
 	render() {
 		return <React.Fragment>
 			<Button className="add-button" color="primary" onClick={this.toggleForm}>Add new group</Button>
@@ -175,15 +211,40 @@ export default class Groups extends React.Component {
 						<FormGroup>
 							<Label for="subjectId">Subject</Label>
 							<Input value={this.state.groupData.subjectId} onChange={e => this.collectState('subjectId', e.target.value)} type="select" name="subjectId" id="subjectId" placeholder="Subject">
+								<option value="" disabled>Select subject</option>
 								{this.state.subjects.map(subject => <option key={subject.id} value={subject.id}>{subject.name}</option>)}
 							</Input>
 						</FormGroup>
 						<FormGroup>
 							<Label for="userId">Teacher</Label>
 							<Input value={this.state.groupData.userId} onChange={e => this.collectState('userId', e.target.value)} type="select" name="userId" id="userId" placeholder="Teacher">
+								<option value="" disabled>Select teacher</option>
 								{this.state.users.map(user => <option key={user.id} value={user.id}>{user.name + ' ' + user.surname}</option>)}
 							</Input>
 						</FormGroup>
+						<FormGroup>
+							<div className="row">
+								<div className="col-12">
+									<Label for="studentId">Students</Label>
+								</div>
+								<div className="col-10">
+									<Input value={this.state.groupData.studentId} onChange={e => this.collectState('studentId', e.target.value)} type="select" name="studentId" id="studentId" placeholder="Students">
+										<option value="" disabled>Select student</option>
+										{this.state.students.filter(student => !student.selected).map(student => <option key={student.id} value={student.id}>{student.name + ' ' + student.surname}</option>)}
+									</Input>
+								</div>
+								<div className="col-2 text-right">
+									<Button color="success" onClick={this.selectStudent}>Add</Button>
+								</div>
+							</div>
+						</FormGroup>
+						<ListGroup className="groups-list">
+							{this.state.students.filter(student => student.selected).map(student => (
+								<ListGroupItem key={student.id}>
+									{student.name + ' ' + student.surname}
+									<Badge onClick={() => {this.deselectStudent(student.id)}} color="danger" className="float-right delete-icon">X</Badge></ListGroupItem>
+							))}
+						</ListGroup>
 					</Form>
 				</ModalBody>
 				<ModalFooter>

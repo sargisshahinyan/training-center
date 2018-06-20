@@ -115,7 +115,7 @@ export default class Users extends React.Component {
 		this.setState((prevState) => ({
 			userForm: !prevState.userForm,
 			selectedUser: userId,
-			userData: userData || this.fields.concat(['avatar']).reduce((obj, field) => (obj[field] = '',obj), {})
+			userData: this.fields.concat(['avatar']).reduce((obj, field) => ((obj[field] = obj[field] || obj[field] === 0 ? String(obj[field]) : ''),obj), userData || {})
 		}));
 	}
 	
