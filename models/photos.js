@@ -1,11 +1,12 @@
 const fs = require("fs");
 const isImage = require("is-image");
+const path = require('path');
 
 class Photos{
-	static createPhoto(name = '', path = '', avatar) {
+	static createPhoto(name = '', filePath = '', avatar) {
 		return new Promise((resolve, reject) => {
 			let extension;
-			const paths = (path + name).split('/');
+			const paths = path.resolve(path.normalize(filePath + name)).split(path.sep);
 			paths.pop();
 			
 			try {
@@ -18,7 +19,7 @@ class Photos{
 			}
 			
 			paths.reduce(function (fullPath, path) {
-				fullPath += path + '/';
+				fullPath += path + path.sep;
 				
 				if(!fs.existsSync(fullPath)) {
 					fs.mkdir(fullPath);
@@ -30,13 +31,13 @@ class Photos{
 			name += `.${extension}`;
 			avatar = avatar.replace(/http:\/\/|https:\/\//, "");
 			
-			fs.writeFile(path + name, avatar.replace(new RegExp(`^data:image\\/${extension};base64,`), ""), 'base64', (err) => {
+			fs.writeFile(filePath + name, avatar.replace(new RegExp(`^data:image\\/${extension};base64,`), ""), 'base64', (err) => {
 				if(err) {
 					throw err;
 				}
 				
 				if(!isImage(name)) {
-					fs.unlinkSync(path + name);
+					fs.unlinkSync(filePath + name);
 					reject({
 						message: "Is not valid image"
 					});
