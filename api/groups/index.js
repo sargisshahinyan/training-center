@@ -8,7 +8,7 @@ const Groups = require(appRoot + '/models/groups');
 const helpers = require(appRoot + '/libs/helpers');
 
 // data for groups
-const fields = ['name'];
+const fields = ['name', 'userId', 'subjectId', 'students'];
 
 // middleware
 const authCheckingMiddleware = require(`${appRoot}/middlewares/authCheckingMiddleware`);
@@ -57,6 +57,13 @@ router.post('/', function (req, res) {
 	const data = {};
 	
 	fields.forEach(field => data[field] = req.body[field]);
+	
+	if(!Array.isArray(data.students) || data.students.find(student => isNaN(Number(student))) !== undefined) {
+		res.status(403).json({
+			'message': `Invalid parameter students`
+		});
+		return;
+	}
 	
 	Groups.addGroup(data).then(group => {
 		res.status(201).json({

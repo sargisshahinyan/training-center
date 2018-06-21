@@ -18,8 +18,8 @@ class Photos{
 				return;
 			}
 			
-			paths.reduce(function (fullPath, path) {
-				fullPath += path + path.sep;
+			paths.reduce(function (fullPath, directory) {
+				fullPath += directory + path.sep;
 				
 				if(!fs.existsSync(fullPath)) {
 					fs.mkdir(fullPath);
@@ -31,7 +31,7 @@ class Photos{
 			name += `.${extension}`;
 			avatar = avatar.replace(/http:\/\/|https:\/\//, "");
 			
-			fs.writeFile(filePath + name, avatar.replace(new RegExp(`^data:image\\/${extension};base64,`), ""), 'base64', (err) => {
+			fs.writeFile(path.resolve(path.normalize(filePath + name)), avatar.replace(new RegExp(`^data:image\\/${extension};base64,`), ""), 'base64', (err) => {
 				if(err) {
 					throw err;
 				}

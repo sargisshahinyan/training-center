@@ -2,6 +2,8 @@ const conn = require('./connection');
 
 const table = '`groups`';
 
+// data for groups
+const fields = ['name', 'userId', 'subjectId'];
 class Groups {
 	static getGroups(config = {}) {
 		const defaultConfigs = {
@@ -38,39 +40,77 @@ class Groups {
 				
 				let group = groups[0] || null;
 				
+				let pr = Promise.resolve([]);
+				
 				if(group) {
-					delete group.password;
+					pr = new Promise(function (resolve) {
+						conn.query('SELECT studentId FROM studentsGroups WHERE groupId = ?', [id], (err, students) => {
+							if(err) throw err;
+							
+							resolve(students.map(student => student.studentId));
+						});
+					});
 				}
 				
-				resolve(group);
+				pr.then(students => {
+					group.students = students;
+					
+					resolve(group);
+				});
 			});
 		});
 	}
 	
 	static addGroup(data) {
 		return new Promise((resolve, reject) => {
-			conn.query(`INSERT INTO ${table} SET ?`, data, (err, res) => {
+			let insertData = {};
+			
+			fields.forEach(field => insertData[field] = data[field]);
+			
+			conn.query(`INSERT INTO ${table} SET ?`, insertData, (err, res) => {
 				if(err) throw err;
 				
-				Groups.getGroup(res.insertId).then(group => {
-					group ? resolve(group) : reject({
-						message: 'Invalid group id'
-					});
-				}, reject);
+				const groupId = res.insertId;
+				
+				conn.query('INSERT INTO studentsGroups (studentId, groupId) VALUES ?', [
+					data.students.map(student => [student, groupId])
+				], (err) => {
+					if(err) throw err;
+					
+					Groups.getGroup(res.insertId).then(group => {
+						group ? resolve(group) : reject({
+							message: 'Invalid group id'
+						});
+					}, reject);
+				});
 			});
 		});
 	}
 	
 	static editGroup(id, data) {
 		return new Promise((resolve, reject) => {
-			conn.query(`UPDATE ${table} SET ? WHERE id = ?`, [data, id], (err) => {
+			let insertData = {};
+			
+			fields.forEach(field => insertData[field] = data[field]);
+			
+			conn.query(`UPDATE ${table} SET ? WHERE id = ?`, [insertData, id], (err) => {
 				if(err) throw err;
 				
-				Groups.getGroup(id).then(group => {
-					group ? resolve(group) : reject({
-						message: 'Invalid group id'
+				conn.query('DELETE FROM studentsGroups WHERE groupId = ?', [id], (err) => {
+					if(err) throw err;
+					
+					conn.query('INSERT INTO studentsGroups (studentId, groupId) VALUES ?', [
+						data.students.map(student => [student, id])
+					], (err) => {
+						if(err) throw err;
+						
+						Groups.getGroup(id).then(group => {
+							group ? resolve(group) : reject({
+								message: 'Invalid group id'
+							});
+						}, reject);
 					});
-				}, reject);
+				});
 			});
 		});
 	}

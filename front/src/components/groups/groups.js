@@ -76,6 +76,14 @@ export default class Groups extends React.Component {
 		e.preventDefault();
 		
 		GroupsModel.getGroup(id).then(group => {
+			if(Array.isArray(group.students)) {
+				this.state.students.forEach(student => {
+					if(group.students.some(id => id === student.id)) {
+						student.selected = true;
+					}
+				});
+			}
+			
 			this.toggleForm(null, id, group);
 		});
 	}
@@ -259,14 +267,28 @@ export default class Groups extends React.Component {
 	}
 	
 	collectData() {
-		const missedField = this.fields.find(field => !this.state.groupData[field]);
+		const missedField = this.fields.find(field => !this.state.groupData[field] && field !== 'studentId');
 		
 		if(missedField) {
-			this.toggleAlert(null, `${missedField.replace(/^./, l => l.toUpperCase())} is required`);
+			this.toggleAlert(null, `${missedField.replace('user', 'teacher').replace(/id/i, '').replace(/^./, l => l.toUpperCase())} is required`);
 			return;
 		}
 		
-		return {...this.state.groupData};
+		const selectedStudents = this.state.students.filter(student => student.selected);
+		
+		if(!selectedStudents.length) {
+			this.toggleAlert(null, 'Please select at least one student');
+			return;
+		}
+		
+		const result = {
+			...this.state.groupData,
+			students: selectedStudents.map(student => student.id)
+		};
+		
+		delete result.studentId;
+		
+		return result;
 	}
 	
 	collectState(key, value) {
