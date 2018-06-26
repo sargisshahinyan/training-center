@@ -8,12 +8,19 @@ const Groups = require(appRoot + '/models/groups');
 const helpers = require(appRoot + '/libs/helpers');
 
 // data for groups
-const fields = ['name', 'userId', 'subjectId', 'students'];
+const fields = ['name', 'userId', 'subjectId', 'students', 'days'];
 
 // middleware
 const authCheckingMiddleware = require(`${appRoot}/middlewares/authCheckingMiddleware`);
+const adminPermissionMiddleware = require(`${appRoot}/middlewares/adminPermissionMiddleware`);
 
 router.use(authCheckingMiddleware);
+
+router.get('/all', function (req, res) {
+	Groups.getFullGroups().then(groups => res.json(groups), err => res.status(500).json(err));
+});
+
+router.use(adminPermissionMiddleware);
 
 router.get('/', function (req, res) {
 	const keys = ['limit', 'offset'];
@@ -25,7 +32,7 @@ router.get('/', function (req, res) {
 		}
 	});
 	
-	Groups.getGroups(data).then(groups => res.json(groups));
+	Groups.getGroups(data).then(groups => res.json(groups), err => res.status(500).json(err));
 });
 
 router.get('/:id', function(req, res) {
@@ -58,9 +65,16 @@ router.post('/', function (req, res) {
 	
 	fields.forEach(field => data[field] = req.body[field]);
 	
-	if(!Array.isArray(data.students) || data.students.find(student => isNaN(Number(student))) !== undefined) {
+	if(!Array.isArray(data.students) || data.students.some(student => isNaN(Number(student)))) {
 		res.status(403).json({
 			'message': `Invalid parameter students`
+		});
+		return;
+	}
+	
+	if(!Array.isArray(data.days) || data.days.some(day => isNaN(Number(day.weekDay)) || !helpers.isTimeValid(day.startsAt))) {
+		res.status(403).json({
+			'message': `Invalid parameter days`
 		});
 		return;
 	}
@@ -69,7 +83,7 @@ router.post('/', function (req, res) {
 		res.status(201).json({
 			'message': 'Group has been created'
 		});
-	}, err => res.status(400).json(err));
+	}, err => res.status(500).json(err));
 });
 
 router.put('/:id', function (req, res) {
@@ -98,11 +112,18 @@ router.put('/:id', function (req, res) {
 	
 	fields.forEach(field => data[field] = req.body[field]);
 	
+	if(!Array.isArray(data.students) || data.students.find(student => isNaN(Number(student))) !== undefined) {
+		res.status(403).json({
+			'message': `Invalid parameter students`
+		});
+		return;
+	}
+	
 	Groups.editGroup(id, data).then(group => {
 		res.json({
 			'message': 'Group has been updated'
 		});
-	}, err => res.status(400).json(err));
+	}, err => res.status(500).json(err));
 });
 
 router.delete('/:id', function (req, res) {

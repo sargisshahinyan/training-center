@@ -38,6 +38,12 @@ class Helpers{
 	static checkId(id) {
 		return /^\w{24}$/.test(id) || isNaN(id);
 	}
+	
+	static isTimeValid(time) {
+		const [hour, minute] = time.split(':');
+		
+		return Number(hour) < 24 && Number(minute) < 60;
+	}
 }
 
 module.exports = Helpers;

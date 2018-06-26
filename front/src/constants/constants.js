@@ -4,9 +4,12 @@ import Users from '../components/users/users';
 import Students from '../components/students/students';
 import Subjects from '../components/subjects/subjects';
 import Groups from '../components/groups/groups';
+import TimeTable from '../components/timeTable/timeTable';
+
+const teacherRoutePaths = ['/home', '/timetable'];
 
 export const baseUrl = 'https://colibri-training.herokuapp.com/api';
-export const routes = [
+export const adminRoutes = [
 	{
 		path: '/home', name: 'Home', component: Home
 	},
@@ -23,6 +26,8 @@ export const routes = [
 		path: '/groups', name: 'Groups', component: Groups
 	},
 	{
-		path: '/timetable', name: 'Time table', component: null
+		path: '/timetable', name: 'Time table', component: TimeTable
 	}
 ];
+
+export const teacherRoutes = adminRoutes.filter(route => teacherRoutePaths.some(path => path === route.path));

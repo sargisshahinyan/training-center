@@ -10,7 +10,7 @@ global.appRoot = path.resolve(__dirname);
 const staticRoutes = [
 	'/home', '/users', '/students', '/subjects', '/groups', '/timetable'
 ];
-const helpers = require('./libs/helpers');
+const helpers = require(appRoot + '/libs/helpers');
 
 app.use(logger('dev'));
 app.use(express.json({ limit: '50mb' }));
