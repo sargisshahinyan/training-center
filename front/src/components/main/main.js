@@ -11,7 +11,7 @@ import Header from '../templates/header/header';
 import Users from '../../models/users';
 
 // Routes
-import { routes } from "../../constants/constants";
+import { adminRoutes } from "../../constants/constants";
 
 export default class Main extends React.Component {
 	constructor(props) {
@@ -39,7 +39,7 @@ export default class Main extends React.Component {
 	}
 	
 	static renderMain() {
-		const reactRoutes = routes.map(route => (
+		const reactRoutes = adminRoutes.map(route => (
 			<Route key={route.path} path={route.path} component={route.component} />
 		));
 		

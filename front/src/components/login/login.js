@@ -27,7 +27,8 @@ export default class Login extends React.Component {
 		this.logIn = this.logIn.bind(this);
 	}
 	
-	logIn() {
+	logIn(e) {
+		e.preventDefault();
 		for(let key in this.state) {
 			if(key === 'redirect') {
 				continue;
@@ -55,7 +56,7 @@ export default class Login extends React.Component {
 				return <Redirect to='/home' />;
 			default:
 				return (
-					<form className="auth">
+					<form onSubmit={this.logIn} className="auth">
 						<div className="container">
 							<label><b>Username</b></label>
 							<input type="text" placeholder="Enter Username" onInput={(e) => this.setState({username: e.target.value})} required />
@@ -63,7 +64,7 @@ export default class Login extends React.Component {
 							<label><b>Password</b></label>
 							<input type="password" placeholder="Enter Password" onInput={(e) => this.setState({password: e.target.value})} required />
 							
-							<button type="button" onClick={this.logIn}>Login</button>
+							<button type="submit">Login</button>
 						</div>
 					</form>
 				);

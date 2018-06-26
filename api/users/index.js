@@ -14,6 +14,10 @@ const sha = require('sha256');
 const fields = ['name', 'surname', 'email', 'phone', 'username', 'password', 'password-retype', 'privilege'];
 const optionalFields = ['avatar'];
 
+// middleware
+const authCheckingMiddleware = require(`${appRoot}/middlewares/authCheckingMiddleware`);
+const adminPermissionMiddleware = require(`${appRoot}/middlewares/adminPermissionMiddleware`);
+
 router.post('/auth', function (req, res) {
 	const data = req.body;
 	
@@ -32,7 +36,8 @@ router.post('/auth', function (req, res) {
 	Users.authUser(data.username, data.password).then(user => {
 		Users.setUserToken(user.id).then(token => {
 			res.json({
-				token
+				token,
+				privilege: user.privilege || 0
 			});
 		});
 	}, () => {
@@ -42,26 +47,7 @@ router.post('/auth', function (req, res) {
 	});
 });
 
-router.use(function (req, res, next) {
-	const header = req.headers['authorization'] || '',
-		  token = header.split(/\s+/).pop() || '';
-	
-	if(!token) {
-		res.status(401).json({
-			message: 'Token required'
-		});
-		return;
-	}
-	
-	Users.getUser(token).then(user => {
-		Object.defineProperty(user, 'token', {
-			value: token,
-			writable: true
-		});
-		res.locals.user = user;
-		next();
-	}, err => res.status(401).json(err));
-});
+router.use(authCheckingMiddleware);
 
 router.get('/check', function (req, res) {
 	res.json({
@@ -76,6 +62,8 @@ router.use('/logout', function(req, res) {
 		});
 	});
 });
+
+router.use(adminPermissionMiddleware);
 
 router.get('/', function (req, res) {
 	const keys = ['limit', 'offset', 'privilege'];

@@ -3,14 +3,12 @@ import Http from './http';
 
 import { authHeader } from "./users";
 
-const headers = authHeader();
-
 export default class Groups {
 	static getGroups() {
 		return new Promise((resolve, reject) => {
 			Http.get({
 				url: `${baseUrl}/groups`,
-				headers: headers
+				headers: authHeader()
 			}).then(response => resolve(response), error => reject(error));
 		});
 	}
@@ -25,7 +23,7 @@ export default class Groups {
 		return new Promise((resolve, reject) => {
 			Http.get({
 				url: `${baseUrl}/groups/${id}`,
-				headers: headers
+				headers: authHeader()
 			}).then(group => resolve(group), error => reject(error));
 		});
 	}
@@ -39,7 +37,7 @@ export default class Groups {
 			Http.post({
 				url: `${baseUrl}/groups`,
 				body: data,
-				headers: headers
+				headers: authHeader()
 			}).then(response => resolve(response), error => reject(error));
 		});
 	}
@@ -59,7 +57,7 @@ export default class Groups {
 			Http.put({
 				url: `${baseUrl}/groups/${id}`,
 				body: data,
-				headers: headers
+				headers: authHeader()
 			}).then(response => resolve(response), error => reject(error));
 		});
 	}
@@ -74,7 +72,16 @@ export default class Groups {
 			
 			Http.delete({
 				url: `${baseUrl}/groups/${id}`,
-				headers: headers
+				headers: authHeader()
+			}).then(response => resolve(response), error => reject(error));
+		});
+	}
+	
+	static getGroupsData() {
+		return new Promise((resolve, reject) => {
+			Http.get({
+				url: `${baseUrl}/groups/all`,
+				headers: authHeader()
 			}).then(response => resolve(response), error => reject(error));
 		});
 	}

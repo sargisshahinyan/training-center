@@ -12,8 +12,9 @@ const fields = ['name', 'surname', 'phone'];
 
 // middleware
 const authCheckingMiddleware = require(`${appRoot}/middlewares/authCheckingMiddleware`);
+const adminPermissionMiddleware = require(`${appRoot}/middlewares/adminPermissionMiddleware`);
 
-router.use(authCheckingMiddleware);
+router.use(authCheckingMiddleware, adminPermissionMiddleware);
 
 router.get('/', function (req, res) {
 	const keys = ['limit', 'offset'];

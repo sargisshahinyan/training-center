@@ -3,14 +3,12 @@ import Http from './http';
 
 import { authHeader } from "./users";
 
-const headers = authHeader();
-
 export default class Students {
 	static getStudents() {
 		return new Promise((resolve, reject) => {
 			Http.get({
 				url: `${baseUrl}/students`,
-				headers: headers
+				headers: authHeader()
 			}).then(response => resolve(response), error => reject(error));
 		});
 	}
@@ -25,7 +23,7 @@ export default class Students {
 		return new Promise((resolve, reject) => {
 			Http.get({
 				url: `${baseUrl}/students/${id}`,
-				headers: headers
+				headers: authHeader()
 			}).then(student => resolve(student), error => reject(error));
 		});
 	}
@@ -39,7 +37,7 @@ export default class Students {
 			Http.post({
 				url: `${baseUrl}/students`,
 				body: data,
-				headers: headers
+				headers: authHeader()
 			}).then(response => resolve(response), error => reject(error));
 		});
 	}
@@ -59,7 +57,7 @@ export default class Students {
 			Http.put({
 				url: `${baseUrl}/students/${id}`,
 				body: data,
-				headers: headers
+				headers: authHeader()
 			}).then(response => resolve(response), error => reject(error));
 		});
 	}
@@ -74,7 +72,7 @@ export default class Students {
 			
 			Http.delete({
 				url: `${baseUrl}/students/${id}`,
-				headers: headers
+				headers: authHeader()
 			}).then(response => resolve(response), error => reject(error));
 		});
 	}

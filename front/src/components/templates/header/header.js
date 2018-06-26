@@ -4,9 +4,10 @@ import './header.css';
 
 import Users from "../../../models/users";
 
-import { routes } from "../../../constants/constants";
+import { adminRoutes, teacherRoutes } from "../../../constants/constants";
 
 export default class Header extends React.Component {
+	routes = Users.isAdminAuthorized() ? adminRoutes : teacherRoutes;
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -31,10 +32,6 @@ export default class Header extends React.Component {
 		if(this.state.redirect) {
 			return <Redirect to='/' />;
 		}
-
-		const reactRoutes = routes.map(route => {
-			return <Link key={route.path} to={route.path} className={this.props.path.includes(route.path) ? 'selected' : null}>{route.name}</Link>;
-		});
 		
 		return (
 			<header className="header-fixed">
@@ -45,7 +42,9 @@ export default class Header extends React.Component {
 						</Link>
 					</h1>
 					<nav ref={this.nav}>
-						{reactRoutes}
+						{this.routes.map(route => {
+							return <Link key={route.path} to={route.path} className={this.props.path.includes(route.path) ? 'selected' : null}>{route.name}</Link>;
+						})}
 						<a href='#' onClick={this.logOut}>Log out</a>
 					</nav>
 				</div>

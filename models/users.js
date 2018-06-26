@@ -86,7 +86,7 @@ class Users {
 		password = sha(password);
 		
 		return new Promise((resolve, reject) => {
-			conn.query(`SELECT id FROM ${table} WHERE username = ? AND password = ?`, [username, password], (err, rows) => {
+			conn.query(`SELECT id, privilege FROM ${table} WHERE username = ? AND password = ?`, [username, password], (err, rows) => {
 				if(err) {
 					console.error(err);
 					return;

@@ -1,5 +1,6 @@
 import { baseUrl } from '../constants/constants';
 import Http from './http';
+import permission from '../constants/permissions.json';
 
 const headers = {
 	'Content-Type': 'application/json'
@@ -7,6 +8,10 @@ const headers = {
 
 function getUserKey() {
 	return localStorage.getItem("token");
+}
+
+function getUserPrivilege() {
+	return Number(localStorage.getItem("privilege"));
 }
 
 export function authHeader() {
@@ -70,6 +75,7 @@ export default class Users {
 	
 	static setUser(user) {
 		localStorage.setItem("token", user.token || '');
+		localStorage.setItem("privilege", user.privilege);
 	}
 
 	static forgetUser() {
@@ -136,5 +142,9 @@ export default class Users {
 	
 	static getHeaders(authorized = true) {
 		return authorized ? authHeader() : headers;
+	}
+	
+	static isAdminAuthorized() {
+		return getUserPrivilege() === permission.ADMIN_PERMISSION;
 	}
 }
