@@ -61,7 +61,7 @@ exports.up = function(db) {
 				notNull: true,
 				foreignKey: {
 					name: GROUP_DAYS_TABLE + '_ibfk_2',
-					table: 'groups',
+					table: WEEK_DAYS_TABLE,
 					rules: {
 						onDelete: 'CASCADE',
 						onUpdate: 'CASCADE'
