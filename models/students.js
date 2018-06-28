@@ -5,7 +5,7 @@ const table = '`students`';
 class Students {
 	static getStudents(config = {}) {
 		const defaultConfigs = {
-			limit: 20,
+			limit: 200,
 			offset: 0
 		};
 		

@@ -5,7 +5,7 @@ const table = '`subjects`';
 class Subjects {
 	static getSubjects(config = {}) {
 		const defaultConfigs = {
-			limit: 20,
+			limit: 200,
 			offset: 0
 		};
 		

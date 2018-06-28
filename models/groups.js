@@ -116,7 +116,7 @@ class Groups {
 	
 	static getGroups(config = {}) {
 		const defaultConfigs = {
-			limit: 20,
+			limit: 200,
 			offset: 0
 		};
 		

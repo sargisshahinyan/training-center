@@ -8,7 +8,7 @@ const table = '`users`';
 class Users {
 	static getUsers(config = {}) {
 		const defaultConfigs = {
-			limit: 20,
+			limit: 200,
 			offset: 0,
 			privilege: '%'
 		};
