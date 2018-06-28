@@ -6,3 +6,7 @@ td, th {
 caption {
     caption-side: top;
 }
+
+.form-control {
+    width: 100% !important;
+}

@@ -274,12 +274,6 @@ export default class Groups extends React.Component {
 							<Label for="name">Name</Label>
 							<Input value={this.state.groupData.name} onChange={e => this.collectState('name', e.target.value)} type="text" name="name" id="name" placeholder="Name" />
 						</FormGroup>
-						{/*<FormGroup>
-							<Label for="startsAt">Starts at</Label>
-							<InputMask value={this.state.groupData.startsAt} onChange={e => this.collectState('startsAt', e.target.value)} mask="99:99" maskChar=" ">
-								{(props) => <Input {...props} type="text" name="startsAt" id="startsAt"/>}
-							</InputMask>
-						</FormGroup>*/}
 						<FormGroup>
 							<Label for="userId">Teacher</Label>
 							<Input value={this.state.groupData.userId} onChange={e => this.collectState('userId', e.target.value)} type="select" name="userId" id="userId" placeholder="Teacher">
