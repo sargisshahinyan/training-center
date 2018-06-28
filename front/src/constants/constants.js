@@ -8,7 +8,7 @@ import TimeTable from '../components/timeTable/timeTable';
 
 const teacherRoutePaths = ['/home', '/timetable'];
 
-export const baseUrl = 'https://colibri-training.herokuapp.com//api';
+export const baseUrl = 'https://colibri-training.herokuapp.com/api';
 export const adminRoutes = [
 	{
 		path: '/home', name: 'Home', component: Home
