@@ -35,8 +35,7 @@ exports.up = function(db) {
 			'Wednesday',
 			'Thursday',
 			'Friday',
-			'Saturday',
-			'Sunday'
+			'Saturday'
 		];
 		return db.runSql(`INSERT INTO ${WEEK_DAYS_TABLE} (name) VALUES ('${week_days.join('\'),(\'')}')`);
 	}, function(err) {
