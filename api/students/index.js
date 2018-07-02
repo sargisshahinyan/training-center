@@ -17,7 +17,7 @@ const adminPermissionMiddleware = require(`${appRoot}/middlewares/adminPermissio
 router.use(authCheckingMiddleware, adminPermissionMiddleware);
 
 router.get('/', function (req, res) {
-	const keys = ['limit', 'offset'];
+	const keys = ['limit', 'offset', 'archived'];
 	let data = {};
 	
 	keys.forEach(key => {
@@ -92,7 +92,11 @@ router.put('/:id', function (req, res) {
 	
 	fields.forEach(field => data[field] = req.body[field]);
 	
-	Students.editStudent(id, data).then(student => {
+	if('archived' in req.body && !isNaN(req.body.archived)) {
+		data.archived = req.body.archived;
+	}
+	
+	Students.editStudent(id, data).then(() => {
 		res.json({
 			'message': 'Student has been updated successfully'
 		});

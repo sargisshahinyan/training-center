@@ -35,7 +35,7 @@ export default class Header extends React.Component {
 		
 		return (
 			<header className="header-fixed">
-				<div className="header-limiter">
+				<div className="header-limiter text-left">
 					<Link to='/home'>
 						<img className="logo" src="/img/logo.png" alt="Logo"/>
 					</Link>

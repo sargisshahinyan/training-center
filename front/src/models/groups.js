@@ -4,11 +4,25 @@ import Http from './http';
 import { authHeader } from "./users";
 
 export default class Groups {
-	static getGroups() {
+	static getGroups(config) {
+		if(!config || typeof config !== 'object') {
+			config = {};
+		}
+		
+		const keys = ['limit', 'offset'];
+		let data = {};
+		
+		keys.forEach(key => {
+			if(key in config) {
+				data[key] = config[key];
+			}
+		});
+		
 		return new Promise((resolve, reject) => {
 			Http.get({
 				url: `${baseUrl}/groups`,
-				headers: authHeader()
+				headers: authHeader(),
+				params: data
 			}).then(response => resolve(response), error => reject(error));
 		});
 	}

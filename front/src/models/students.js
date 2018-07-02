@@ -4,11 +4,25 @@ import Http from './http';
 import { authHeader } from "./users";
 
 export default class Students {
-	static getStudents() {
+	static getStudents(config) {
+		if(!config || typeof config !== 'object') {
+			config = {};
+		}
+		
+		const keys = ['limit', 'offset', 'archived'];
+		let data = {};
+		
+		keys.forEach(key => {
+			if(key in config) {
+				data[key] = config[key];
+			}
+		});
+		
 		return new Promise((resolve, reject) => {
 			Http.get({
 				url: `${baseUrl}/students`,
-				headers: authHeader()
+				headers: authHeader(),
+				params: data
 			}).then(response => resolve(response), error => reject(error));
 		});
 	}

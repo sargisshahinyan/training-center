@@ -6,7 +6,8 @@ class Students {
 	static getStudents(config = {}) {
 		const defaultConfigs = {
 			limit: 200,
-			offset: 0
+			offset: 0,
+			archived: 0
 		};
 		
 		if(!config || typeof config !== 'object') {
@@ -22,8 +23,8 @@ class Students {
 		}
 		
 		return new Promise((resolve) => {
-			conn.query(`SELECT id, name, surname FROM ${table} LIMIT ?, ?`,
-				[config['offset'], config['limit']], function (err, students) {
+			conn.query(`SELECT id, name, surname FROM ${table} WHERE archived LIKE ? LIMIT ?, ?`,
+				[config['archived'], config['offset'], config['limit']], function (err, students) {
 					if(err) throw err;
 					
 					resolve(students);

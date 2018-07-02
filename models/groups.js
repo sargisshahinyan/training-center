@@ -106,7 +106,7 @@ function checkExistingGroupsCount(data) {
 	
 	data.days.forEach((day, i) => {
 		checkers[i] = new Promise(function (resolve, reject) {
-			connection.query('SELECT * FROM groupDays WHERE weekDayId = ? AND startsAt BETWEEN ? AND ?', [day.weekDay, day.startsAt, +day.startsAt.substr(0, 2) + 2 + day.startsAt.substr(2)], (err, res) => {
+			connection.query('SELECT * FROM groupDays WHERE weekDayId = ? AND startsAt BETWEEN ? AND ?', [day.weekDay, +day.startsAt.substr(0, 2) - 2 + day.startsAt.substr(2), +day.startsAt.substr(0, 2) + 2 + day.startsAt.substr(2)], (err, res) => {
 				if(err) throw err;
 				
 				res.length < 3 ? resolve() : reject(res.map(row => row.groupId));

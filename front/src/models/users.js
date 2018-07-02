@@ -21,11 +21,25 @@ export function authHeader() {
 }
 
 export default class Users {
-	static getUsers() {
+	static getUsers(config) {
+		if(!config || typeof config !== 'object') {
+			config = {};
+		}
+		
+		const keys = ['limit', 'offset'];
+		let data = {};
+		
+		keys.forEach(key => {
+			if(key in config) {
+				data[key] = config[key];
+			}
+		});
+		
 		return new Promise((resolve, reject) => {
 			Http.get({
 				url: `${baseUrl}/users`,
-				headers: authHeader()
+				headers: authHeader(),
+				params: data
 			}).then(response => resolve(response), error => reject(error));
 		});
 	}
