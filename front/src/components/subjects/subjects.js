@@ -135,6 +135,8 @@ export default class Subjects extends React.Component {
 			case 'DELETE_USER':
 				this.deleteSubject();
 				break;
+			default:
+				break;
 		}
 		
 		this.toggleConfirm();

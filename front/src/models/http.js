@@ -94,7 +94,9 @@ export default class Http{
 		
 		return new Promise((resolve, reject) => {
 			fetch(url, options).then(response => {
-				response.ok ? response.json().then(resolve) : reject(response.statusText);
+				response.json().then(data => {
+					response.ok ? resolve(data) : reject(data)
+				});
 			}, error => {
 				reject(error);
 			});

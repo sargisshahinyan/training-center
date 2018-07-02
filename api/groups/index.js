@@ -81,9 +81,9 @@ router.post('/', function (req, res) {
 	
 	Groups.addGroup(data).then(group => {
 		res.status(201).json({
-			'message': 'Group has been created'
+			'message': 'Group has been created successfully'
 		});
-	}, err => res.status(500).json(err));
+	}, err => res.status(400).json(err));
 });
 
 router.put('/:id', function (req, res) {
@@ -121,9 +121,9 @@ router.put('/:id', function (req, res) {
 	
 	Groups.editGroup(id, data).then(group => {
 		res.json({
-			'message': 'Group has been updated'
+			'message': 'Group has been updated successfully'
 		});
-	}, err => res.status(500).json(err));
+	}, err => res.status(400).json(err));
 });
 
 router.delete('/:id', function (req, res) {

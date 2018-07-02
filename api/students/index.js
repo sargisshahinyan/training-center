@@ -61,7 +61,7 @@ router.post('/', function (req, res) {
 	
 	Students.addStudent(data).then(student => {
 		res.status(201).json({
-			'message': 'Student has been created'
+			'message': 'Student has been created successfully'
 		});
 	}, err => res.status(400).json(err));
 });
@@ -94,7 +94,7 @@ router.put('/:id', function (req, res) {
 	
 	Students.editStudent(id, data).then(student => {
 		res.json({
-			'message': 'Student has been updated'
+			'message': 'Student has been updated successfully'
 		});
 	}, err => res.status(400).json(err));
 });

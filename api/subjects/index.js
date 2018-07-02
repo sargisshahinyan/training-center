@@ -14,7 +14,7 @@ const fields = ['name'];
 const authCheckingMiddleware = require(`${appRoot}/middlewares/authCheckingMiddleware`);
 const adminPermissionMiddleware = require(`${appRoot}/middlewares/adminPermissionMiddleware`);
 
-router.use(authCheckingMiddleware, adminPermissionMiddleware);
+router.use(authCheckingMiddleware);
 
 router.get('/', function (req, res) {
 	const keys = ['limit', 'offset'];
@@ -28,6 +28,8 @@ router.get('/', function (req, res) {
 	
 	Subjects.getSubjects(data).then(subjects => res.json(subjects));
 });
+
+router.use(adminPermissionMiddleware);
 
 router.get('/:id', function(req, res) {
 	const id = Number(req.params.id);
@@ -61,7 +63,7 @@ router.post('/', function (req, res) {
 	
 	Subjects.addSubject(data).then(subject => {
 		res.status(201).json({
-			'message': 'Subject has been created'
+			'message': 'Subject has been created successfully'
 		});
 	}, err => res.status(400).json(err));
 });
@@ -94,7 +96,7 @@ router.put('/:id', function (req, res) {
 	
 	Subjects.editSubject(id, data).then(subject => {
 		res.json({
-			'message': 'Subject has been updated'
+			'message': 'Subject has been updated successfully'
 		});
 	}, err => res.status(400).json(err));
 });

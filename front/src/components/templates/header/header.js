@@ -36,11 +36,9 @@ export default class Header extends React.Component {
 		return (
 			<header className="header-fixed">
 				<div className="header-limiter">
-					<h1>
-						<Link to='/home'>
-							<img className="logo" src="/img/logo.png" />
-						</Link>
-					</h1>
+					<Link to='/home'>
+						<img className="logo" src="/img/logo.png" alt="Logo"/>
+					</Link>
 					<nav ref={this.nav}>
 						{this.routes.map(route => {
 							return <Link key={route.path} to={route.path} className={this.props.path.includes(route.path) ? 'selected' : null}>{route.name}</Link>;

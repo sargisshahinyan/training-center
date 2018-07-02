@@ -60,10 +60,8 @@ router.use('/logout', function(req, res) {
 		res.json({
 			message: 'Token has been removed'
 		});
-	});
+	}, err => res.status(400).json(err));
 });
-
-router.use(adminPermissionMiddleware);
 
 router.get('/', function (req, res) {
 	const keys = ['limit', 'offset', 'privilege'];
@@ -75,8 +73,10 @@ router.get('/', function (req, res) {
 		}
 	});
 	
-	Users.getUsers(data).then(users => res.json(users));
+	Users.getUsers(data).then(users => res.json(users), err => res.status(404).json(err));
 });
+
+router.use(adminPermissionMiddleware);
 
 router.get('/:id', function(req, res) {
 	const id = Number(req.params.id);
@@ -144,7 +144,7 @@ router.post('/', function (req, res) {
 	function addUser(data) {
 		Users.addUser(data).then(user => {
 			res.status(201).json({
-				'message': 'User has been created'
+				'message': 'User has been created successfully'
 			});
 		}, err => res.status(400).json(err));
 	}
@@ -219,7 +219,7 @@ router.put('/:id', function (req, res) {
 		promise.then(() => {
 			Users.editUser(id, data).then(() => {
 				res.json({
-					'message': 'User has been updated'
+					'message': 'User has been updated successfully'
 				});
 			}, err => res.status(400).json(err));
 		});

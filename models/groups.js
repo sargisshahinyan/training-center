@@ -83,6 +83,40 @@ function categorizeUsersGroupsBySubject(users) {
 	return users;
 }
 
+function rejectGroups(groups, cb) {
+	let promises = [];
+	
+	groups.forEach(id => {
+		promises.push(
+			new Promise(function (resolve, reject) {
+				Groups.getGroup(id).then(resolve, reject);
+			})
+		);
+	});
+	
+	Promise.all(promises).then(groups => {
+		cb({
+			'message': `There is no enough place. Please check of ${groups.map(group => group.name).join(', ')}`
+		});
+	});
+}
+
+function checkExistingGroupsCount(data) {
+	let checkers = [];
+	
+	data.days.forEach((day, i) => {
+		checkers[i] = new Promise(function (resolve, reject) {
+			connection.query('SELECT * FROM groupDays WHERE weekDayId = ? AND startsAt BETWEEN ? AND ?', [day.weekDay, day.startsAt, +day.startsAt.substr(0, 2) + 2 + day.startsAt.substr(2)], (err, res) => {
+				if(err) throw err;
+				
+				res.length < 3 ? resolve() : reject(res.map(row => row.groupId));
+			});
+		});
+	});
+	
+	return Promise.all(checkers);
+}
+
 // data for groups
 const fields = ['name', 'userId', 'subjectId'];
 class Groups {
@@ -188,28 +222,32 @@ class Groups {
 			
 			fields.forEach(field => insertData[field] = data[field]);
 			
-			connection.query(`INSERT INTO ${table} SET ?`, insertData, (err, res) => {
-				if(err) throw err;
-				
-				const groupId = res.insertId;
-				
-				connection.query('INSERT INTO studentsGroups (studentId, groupId) VALUES ?', [
-					data.students.map(student => [student, groupId])
-				], (err) => {
+			checkExistingGroupsCount(data).then(() => {
+				connection.query(`INSERT INTO ${table} SET ?`, insertData, (err, res) => {
 					if(err) throw err;
 					
-					connection.query('INSERT INTO groupDays (groupId, weekDayId, startsAt) VALUES ?', [
-						data.days.map(day => [groupId, day.weekDay, day.startsAt])
+					const groupId = res.insertId;
+					
+					connection.query('INSERT INTO studentsGroups (studentId, groupId) VALUES ?', [
+						data.students.map(student => [student, groupId])
 					], (err) => {
 						if(err) throw err;
 						
-						Groups.getGroup(res.insertId).then(group => {
-							group ? resolve(group) : reject({
-								message: 'Invalid group id'
-							});
-						}, reject);
+						connection.query('INSERT INTO groupDays (groupId, weekDayId, startsAt) VALUES ?', [
+							data.days.map(day => [groupId, day.weekDay, day.startsAt])
+						], (err) => {
+							if(err) throw err;
+							
+							Groups.getGroup(res.insertId).then(group => {
+								group ? resolve(group) : reject({
+									message: 'Invalid group id'
+								});
+							}, reject);
+						});
 					});
 				});
+			}, (groups) => {
+				rejectGroups(groups, reject);
 			});
 		});
 	}
@@ -220,34 +258,38 @@ class Groups {
 			
 			fields.forEach(field => insertData[field] = data[field]);
 			
-			connection.query(`UPDATE ${table} SET ? WHERE id = ?`, [insertData, id], (err) => {
-				if(err) throw err;
-				
-				connection.query('DELETE FROM studentsGroups WHERE groupId = ?', [id], (err) => {
+			checkExistingGroupsCount(data).then(() => {
+				connection.query(`UPDATE ${table} SET ? WHERE id = ?`, [insertData, id], (err) => {
 					if(err) throw err;
 					
-					connection.query('INSERT INTO studentsGroups (studentId, groupId) VALUES ?', [
-						data.students.map(student => [student, id])
-					], (err) => {
+					connection.query('DELETE FROM studentsGroups WHERE groupId = ?', [id], (err) => {
 						if(err) throw err;
 						
-						connection.query('DELETE FROM groupDays WHERE groupId = ?', [id], (err) => {
+						connection.query('INSERT INTO studentsGroups (studentId, groupId) VALUES ?', [
+							data.students.map(student => [student, id])
+						], (err) => {
 							if(err) throw err;
 							
-							connection.query('INSERT INTO groupDays (groupId, weekDayId, startsAt) VALUES ?', [
-								data.days.map(day => [id, day.weekDay, day.startsAt])
-							], (err) => {
+							connection.query('DELETE FROM groupDays WHERE groupId = ?', [id], (err) => {
 								if(err) throw err;
 								
-								Groups.getGroup(id).then(group => {
-									group ? resolve(group) : reject({
-										message: 'Invalid group id'
-									});
-								}, reject);
+								connection.query('INSERT INTO groupDays (groupId, weekDayId, startsAt) VALUES ?', [
+									data.days.map(day => [id, day.weekDay, day.startsAt])
+								], (err) => {
+									if(err) throw err;
+									
+									Groups.getGroup(id).then(group => {
+										group ? resolve(group) : reject({
+											message: 'Invalid group id'
+										});
+									}, reject);
+								});
 							});
 						});
 					});
 				});
+			}, (groups) => {
+				rejectGroups(groups, reject);
 			});
 		});
 	}

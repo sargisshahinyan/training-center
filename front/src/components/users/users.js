@@ -145,6 +145,8 @@ export default class Users extends React.Component {
 			case 'DELETE_USER':
 				this.deleteUser();
 				break;
+			default:
+				break;
 		}
 		
 		this.toggleConfirm();

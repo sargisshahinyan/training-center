@@ -118,11 +118,11 @@ export default class Groups extends React.Component {
 			return;
 		}
 		
-		GroupsModel.editGroup(this.state.selectedGroup, group).then(() => {
+		GroupsModel.editGroup(this.state.selectedGroup, group).then((res) => {
 			this.toggleForm();
-			this.toggleAlert(null, 'Group updated successfully', 'Congrats');
+			this.toggleAlert(null, res.message, 'Congrats');
 			this.getGroups();
-		});
+		}, error => this.toggleAlert(null, error.message, 'Warning'));
 	}
 	
 	deleteGroup() {
@@ -140,11 +140,11 @@ export default class Groups extends React.Component {
 			return;
 		}
 		
-		GroupsModel.addGroup(group).then(() => {
+		GroupsModel.addGroup(group).then(res => {
 			this.toggleForm();
-			this.toggleAlert(null, 'Group created successfully', 'Congrats');
+			this.toggleAlert(null, res.message, 'Congrats');
 			this.getGroups();
-		}, err => console.error(err));
+		}, err => this.toggleAlert(null, err.message, 'Warning'));
 	}
 	
 	getGroups() {
@@ -188,6 +188,8 @@ export default class Groups extends React.Component {
 			case 'DELETE_USER':
 				this.deleteGroup();
 				break;
+			default:
+				break;
 		}
 		
 		this.toggleConfirm();
@@ -196,7 +198,7 @@ export default class Groups extends React.Component {
 	selectStudent() {
 		this.setState((prevState) => {
 			const students = prevState.students.map(student => {
-				if(student.id === parseInt(prevState.groupData.studentId)) {
+				if(student.id === parseInt(prevState.groupData.studentId, 10)) {
 					student.selected = true;
 				}
 				
@@ -213,7 +215,7 @@ export default class Groups extends React.Component {
 	selectDay() {
 		this.setState((prevState) => {
 			const days = prevState.weekDays.map(day => {
-				if(day.id === parseInt(prevState.groupData.dayId)) {
+				if(day.id === parseInt(prevState.groupData.dayId, 10)) {
 					day.selected = true;
 				}
 				
@@ -389,6 +391,7 @@ export default class Groups extends React.Component {
 			}
 			
 			day.startsAt = day.startTimeElement.value;
+			return false;
 		});
 		
 		if(isTimesIncorrect) {

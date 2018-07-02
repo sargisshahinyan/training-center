@@ -35,5 +35,5 @@ export function compareTimes(first, second) {
 	secondHour = Number(secondHour);
 	secondMinute = Number(secondMinute);
 	
-	return firstHour > secondHour || firstHour === secondHour && firstMinute > secondMinute ? 1 : -1;
+	return firstHour > secondHour || (firstHour === secondHour && firstMinute > secondMinute) ? 1 : -1;
 }

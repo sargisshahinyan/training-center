@@ -138,6 +138,8 @@ export default class Students extends React.Component {
 			case 'DELETE_USER':
 				this.deleteStudent();
 				break;
+			default:
+				break;
 		}
 		
 		this.toggleConfirm();
