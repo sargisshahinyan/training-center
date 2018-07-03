@@ -101,12 +101,12 @@ function rejectGroups(groups, cb) {
 	});
 }
 
-function checkExistingGroupsCount(data) {
+function checkExistingGroupsCount(data, escapeId = '') {
 	let checkers = [];
 	
 	data.days.forEach((day, i) => {
 		checkers[i] = new Promise(function (resolve, reject) {
-			connection.query('SELECT * FROM groupDays WHERE weekDayId = ? AND startsAt BETWEEN ? AND ?', [day.weekDay, +day.startsAt.substr(0, 2) - 2 + day.startsAt.substr(2), +day.startsAt.substr(0, 2) + 2 + day.startsAt.substr(2)], (err, res) => {
+			connection.query('SELECT * FROM groupDays WHERE weekDayId = ? AND startsAt > ? AND startsAt < ? AND groupId NOT LIKE ?', [day.weekDay, +day.startsAt.substr(0, 2) - 2 + day.startsAt.substr(2), +day.startsAt.substr(0, 2) + 2 + day.startsAt.substr(2), escapeId], (err, res) => {
 				if(err) throw err;
 				
 				res.length < 3 ? resolve() : reject(res.map(row => row.groupId));
@@ -258,7 +258,7 @@ class Groups {
 			
 			fields.forEach(field => insertData[field] = data[field]);
 			
-			checkExistingGroupsCount(data).then(() => {
+			checkExistingGroupsCount(data, id).then(() => {
 				connection.query(`UPDATE ${table} SET ? WHERE id = ?`, [insertData, id], (err) => {
 					if(err) throw err;
 					
