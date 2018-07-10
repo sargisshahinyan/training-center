@@ -1,4 +1,4 @@
-const Users = require(appRoot + '/models/users');
+const Users = require(APP_PATH + '/models/users');
 
 module.exports = function (req, res, next) {
 	const header = req.headers['authorization'] || '',

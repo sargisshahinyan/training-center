@@ -177,6 +177,11 @@ export default class Students extends React.Component {
 	
 	render() {
 		const studentStateAction = this.state.studentData.archived ? 'Activate' : 'Archive';
+		const students = this.state.students
+			.filter(student => !this.state.searchText || student.name.toLowerCase().startsWith(this.state.searchText.toLowerCase()) || student.surname.toLowerCase().startsWith(this.state.searchText.toLowerCase()))
+			.map(student => (
+				<ListGroupItem onClick={this.editStudent} tag="a" href="#" key={student.id} data-id={student.id}>{`${student.name} ${student.surname}`}</ListGroupItem>
+			));
 		
 		return (
 			<React.Fragment>
@@ -191,8 +196,11 @@ export default class Students extends React.Component {
 						<Button className="add-button" color="primary" onClick={this.toggleForm}>Add new student</Button>
 					</FormGroup>
 				</Form>
+				<FormGroup className="search">
+					<Input value={this.state.searchText} onChange={e => this.setState({ searchText: e.target.value })} type="text" placeholder="Search"/>
+				</FormGroup>
 				<ListGroup className="students-list">
-					{this.state.students.map(student => <ListGroupItem onClick={this.editStudent} tag="a" href="#" key={student.id} data-id={student.id}>{`${student.name} ${student.surname}`}</ListGroupItem>)}
+					{students}
 				</ListGroup>
 				<Modal isOpen={this.state.studentForm} toggle={this.toggleForm} className={'modal-lg'}>
 					<ModalHeader toggle={this.toggleForm}>Student form</ModalHeader>

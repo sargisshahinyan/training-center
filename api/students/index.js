@@ -2,17 +2,17 @@ const express= require('express');
 const router = express.Router();
 
 // models
-const Students = require(appRoot + '/models/students');
+const Students = require(APP_PATH + '/models/students');
 
 // helpers
-const helpers = require(appRoot + '/libs/helpers');
+const helpers = require(APP_PATH + '/libs/helpers');
 
 // data for students
 const fields = ['name', 'surname', 'phone'];
 
 // middleware
-const authCheckingMiddleware = require(`${appRoot}/middlewares/authCheckingMiddleware`);
-const adminPermissionMiddleware = require(`${appRoot}/middlewares/adminPermissionMiddleware`);
+const authCheckingMiddleware = require(`${APP_PATH}/middlewares/authCheckingMiddleware`);
+const adminPermissionMiddleware = require(`${APP_PATH}/middlewares/adminPermissionMiddleware`);
 
 router.use(authCheckingMiddleware, adminPermissionMiddleware);
 

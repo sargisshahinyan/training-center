@@ -1,6 +1,6 @@
 module.exports = function (req, res, next) {
 	const user = res.locals.user;
-	const { ADMIN_PERMISSION } = require(`${appRoot}/front/src/constants/permissions`);
+	const { ADMIN_PERMISSION } = require(`${APP_PATH}/front/src/constants/permissions`);
 	
 	if(!user) {
 		res.status(401).json({

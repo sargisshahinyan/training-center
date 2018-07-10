@@ -5,12 +5,12 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
 const app = express();
-global.appRoot = path.resolve(__dirname);
+global.APP_PATH = path.resolve(__dirname);
 
 const staticRoutes = [
 	'/home', '/users', '/students', '/subjects', '/groups', '/timetable'
 ];
-const helpers = require(appRoot + '/libs/helpers');
+const helpers = require(APP_PATH + '/libs/helpers');
 
 app.use(logger('dev'));
 app.use(express.json({ limit: '50mb' }));

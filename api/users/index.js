@@ -2,11 +2,11 @@ const express= require('express');
 const router = express.Router();
 
 // models
-const Users = require(appRoot + '/models/users');
-const Photos = require(appRoot + '/models/photos');
+const Users = require(APP_PATH + '/models/users');
+const Photos = require(APP_PATH + '/models/photos');
 
 // helpers
-const helpers = require(appRoot + '/libs/helpers');
+const helpers = require(APP_PATH + '/libs/helpers');
 const emailValidator = require('email-validator');
 const sha = require('sha256');
 
@@ -15,8 +15,8 @@ const fields = ['name', 'surname', 'email', 'phone', 'username', 'password', 'pa
 const optionalFields = ['avatar'];
 
 // middleware
-const authCheckingMiddleware = require(`${appRoot}/middlewares/authCheckingMiddleware`);
-const adminPermissionMiddleware = require(`${appRoot}/middlewares/adminPermissionMiddleware`);
+const authCheckingMiddleware = require(`${APP_PATH}/middlewares/authCheckingMiddleware`);
+const adminPermissionMiddleware = require(`${APP_PATH}/middlewares/adminPermissionMiddleware`);
 
 router.post('/auth', function (req, res) {
 	const data = req.body;
@@ -131,7 +131,7 @@ router.post('/', function (req, res) {
 	
 	if(data.avatar) {
 		const fileName = `/img/avatars/${sha(Date.now().toString())}`;
-		const path = `${appRoot}/front/build`;
+		const path = `${APP_PATH}/front/build`;
 		
 		Photos.createPhoto(fileName, path, data.avatar).then(img => {
 			data.avatar = img;
@@ -199,7 +199,7 @@ router.put('/:id', function (req, res) {
 	
 	Users.getUserById(id).then((user) => {
 		const fileName = `/img/avatars/${sha(Date.now().toString())}`;
-		const filePath = `${appRoot}/front/build`;
+		const filePath = `${APP_PATH}/front/build`;
 		
 		if(user.avatar) {
 			Photos.deletePhoto(filePath, user.avatar);
@@ -239,7 +239,7 @@ router.delete('/:id', function (req, res) {
 	
 	Users.getUserById(id).then(user => {
 		if(user.avatar) {
-			Photos.deletePhoto(`${appRoot}/front/build`, user.avatar);
+			Photos.deletePhoto(`${APP_PATH}/front/build`, user.avatar);
 		}
 		
 		Users.deleteUser(id).then(id => res.json({
