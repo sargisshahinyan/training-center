@@ -106,10 +106,29 @@ function checkExistingGroupsCount(data, escapeId = '') {
 	
 	data.days.forEach((day, i) => {
 		checkers[i] = new Promise(function (resolve, reject) {
-			connection.query('SELECT * FROM groupDays WHERE weekDayId = ? AND startsAt > ? AND startsAt < ? AND groupId NOT LIKE ?', [day.weekDay, +day.startsAt.substr(0, 2) - 2 + day.startsAt.substr(2), +day.startsAt.substr(0, 2) + 2 + day.startsAt.substr(2), escapeId], (err, res) => {
+			const startTime = +day.startsAt.substr(0, 2) - 2 + day.startsAt.substr(2);
+			const endTime = +day.startsAt.substr(0, 2) + 2 + day.startsAt.substr(2);
+			
+			connection.query('SELECT * FROM groupDays WHERE weekDayId = ? AND startsAt > ? AND startsAt < ? AND groupId NOT LIKE ?', [day.weekDay, startTime, endTime, escapeId], (err, res) => {
 				if(err) throw err;
 				
-				res.length < 3 ? resolve() : reject(res.map(row => row.groupId));
+				let noConflictGroupsCount = 0;
+				
+				for(let i = 0; i < res.length - 1; i++) {
+					for(let j = i + 1; j < res.length; j++) {
+						if(res[j].checked) {
+							continue;
+						}
+						
+						if(Math.abs(parseInt(res[i].startsAt) - parseInt(res[j].startsAt)) >= 2) {
+							res[j].checked = true;
+							noConflictGroupsCount++;
+							break;
+						}
+					}
+				}
+				
+				res.length - noConflictGroupsCount < 3 ? resolve() : reject(res.map(row => row.groupId));
 			});
 		});
 	});

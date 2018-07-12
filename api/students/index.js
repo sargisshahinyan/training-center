@@ -99,8 +99,8 @@ router.put('/:id', function (req, res) {
 	
 	fields.forEach(field => data[field] = req.body[field]);
 	
-	if('archived' in req.body && !isNaN(req.body.filter)) {
-		data.archived = req.body.filter;
+	if('archived' in req.body && !isNaN(req.body.archived)) {
+		data.archived = req.body.archived;
 	}
 	
 	Students.editStudent(id, data).then(() => {
