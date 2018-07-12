@@ -9,7 +9,7 @@ export default class Students {
 			config = {};
 		}
 		
-		const keys = ['limit', 'offset', 'archived'];
+		const keys = ['limit', 'offset', 'filter'];
 		let data = {};
 		
 		keys.forEach(key => {

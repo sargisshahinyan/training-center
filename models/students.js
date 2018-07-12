@@ -1,13 +1,15 @@
 const conn = require('./connection');
 
-const table = '`students`';
+const STUDENTS_TABLE = '`students`';
+const STUDENTS_GROUPS_TABLE = '`studentsGroups`';
 
 class Students {
 	static getStudents(config = {}) {
 		const defaultConfigs = {
 			limit: 200,
 			offset: 0,
-			archived: 0
+			filter: 0,
+			pending: false
 		};
 		
 		if(!config || typeof config !== 'object') {
@@ -23,8 +25,8 @@ class Students {
 		}
 		
 		return new Promise((resolve) => {
-			conn.query(`SELECT id, name, surname FROM ${table} WHERE archived LIKE ? LIMIT ?, ?`,
-				[config['archived'], config['offset'], config['limit']], function (err, students) {
+			conn.query(`SELECT id, name, surname FROM ${STUDENTS_TABLE} WHERE archived LIKE ? LIMIT ?, ?`,
+				[config['filter'], config['offset'], config['limit']], function (err, students) {
 					if(err) throw err;
 					
 					resolve(students);
@@ -32,16 +34,22 @@ class Students {
 		});
 	}
 	
+	static getPendingStudents() {
+		return new Promise((resolve) => {
+			conn.query(`SELECT id, name, surname FROM ${STUDENTS_TABLE} WHERE archived = 0 AND id NOT IN(SELECT DISTINCT studentId FROM ${STUDENTS_GROUPS_TABLE})`, function (err, students) {
+				if(err) throw err;
+				
+				resolve(students);
+			});
+		});
+	}
+	
 	static getStudent(id){
 		return new Promise((resolve) => {
-			conn.query(`SELECT * FROM ${table} WHERE id = ?`, [id], (err, students) => {
+			conn.query(`SELECT * FROM ${STUDENTS_TABLE} WHERE id = ?`, [id], (err, students) => {
 				if(err) throw err;
 				
 				let student = students[0] || null;
-				
-				if(student) {
-					delete student.password;
-				}
 				
 				resolve(student);
 			});
@@ -50,7 +58,7 @@ class Students {
 	
 	static addStudent(data) {
 		return new Promise((resolve, reject) => {
-			conn.query(`INSERT INTO ${table} SET ?`, data, (err, res) => {
+			conn.query(`INSERT INTO ${STUDENTS_TABLE} SET ?`, data, (err, res) => {
 				if(err) throw err;
 				
 				Students.getStudent(res.insertId).then(student => {
@@ -64,7 +72,7 @@ class Students {
 	
 	static editStudent(id, data) {
 		return new Promise((resolve, reject) => {
-			conn.query(`UPDATE ${table} SET ? WHERE id = ?`, [data, id], (err) => {
+			conn.query(`UPDATE ${STUDENTS_TABLE} SET ? WHERE id = ?`, [data, id], (err) => {
 				if(err) throw err;
 				
 				Students.getStudent(id).then(student => {
@@ -78,7 +86,7 @@ class Students {
 	
 	static deleteStudent(id) {
 		return new Promise((resolve) => {
-			conn.query(`DELETE FROM ${table} WHERE id = ?`, [id], (err) => {
+			conn.query(`DELETE FROM ${STUDENTS_TABLE} WHERE id = ?`, [id], (err) => {
 				if(err) throw err;
 				
 				resolve(id);

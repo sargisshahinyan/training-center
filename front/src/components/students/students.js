@@ -7,6 +7,9 @@ import { Form, FormGroup, Label, Input } from 'reactstrap';
 // for list
 import { ListGroup, ListGroupItem } from 'reactstrap';
 
+// constantcs
+import { STUDENTS_FILTERS } from '../../constants/constants'
+
 // alert modal
 import Alert from '../templates/modals/alert/alert';
 // confirm modal
@@ -39,7 +42,7 @@ export default class Students extends React.Component {
 				action: '',
 				title: 'Confirm'
 			},
-			archived: 0
+			filter: 0
 		};
 		
 		this.toggleForm = this.toggleForm.bind(this);
@@ -56,9 +59,9 @@ export default class Students extends React.Component {
 	}
 	
 	componentDidUpdate(nextProps, nextState) {
-		if(this.state.archived !== nextState.archived) {
+		if(this.state.filter !== nextState.filter) {
 			this.getStudents({
-				archived: nextState.archived
+				filter: nextState.filter
 			});
 		}
 	}
@@ -126,7 +129,7 @@ export default class Students extends React.Component {
 	
 	getStudents() {
 		StudentsModel.getStudents({
-			archived: this.state.archived
+			filter: this.state.filter
 		}).then(students => this.setState({students}));
 	}
 	
@@ -187,9 +190,10 @@ export default class Students extends React.Component {
 			<React.Fragment>
 				<Form inline>
 					<FormGroup>
-						<Input value={this.state.archived} onChange={e => this.setState({ archived: Number(e.target.value) })} type="select" name="surname" id="surname">
-							<option value="0">Active</option>
-							<option value="1">Archived</option>
+						<Input value={this.state.filter} onChange={e => this.setState({ filter: Number(e.target.value) })} type="select" name="surname" id="surname">
+							<option value={STUDENTS_FILTERS.ACTIVE}>Active</option>
+							<option value={STUDENTS_FILTERS.ARCHIVED}>Archived</option>
+							<option value={STUDENTS_FILTERS.PENDING}>Pending</option>
 						</Input>
 					</FormGroup>
 					<FormGroup>

@@ -30,4 +30,10 @@ export const adminRoutes = [
 	}
 ];
 
+export const STUDENTS_FILTERS = {
+	ACTIVE: 0,
+	ARCHIVED: 1,
+	PENDING: 2,
+};
+
 export const teacherRoutes = adminRoutes.filter(route => teacherRoutePaths.some(path => path === route.path));

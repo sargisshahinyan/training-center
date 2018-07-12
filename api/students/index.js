@@ -17,16 +17,23 @@ const adminPermissionMiddleware = require(`${APP_PATH}/middlewares/adminPermissi
 router.use(authCheckingMiddleware, adminPermissionMiddleware);
 
 router.get('/', function (req, res) {
-	const keys = ['limit', 'offset', 'archived'];
+	const keys = ['limit', 'offset', 'filter'];
 	let data = {};
 	
 	keys.forEach(key => {
 		if(key in req.query) {
-			data[key] = req.query[key];
+			data[key] = Number(req.query[key]);
 		}
 	});
 	
-	Students.getStudents(data).then(students => res.json(students));
+	switch (data.filter) {
+		case 2:
+			Students.getPendingStudents().then(students => res.json(students));
+			break;
+		default:
+			Students.getStudents(data).then(students => res.json(students));
+			break;
+	}
 });
 
 router.get('/:id', function(req, res) {
@@ -92,8 +99,8 @@ router.put('/:id', function (req, res) {
 	
 	fields.forEach(field => data[field] = req.body[field]);
 	
-	if('archived' in req.body && !isNaN(req.body.archived)) {
-		data.archived = req.body.archived;
+	if('archived' in req.body && !isNaN(req.body.filter)) {
+		data.archived = req.body.filter;
 	}
 	
 	Students.editStudent(id, data).then(() => {
