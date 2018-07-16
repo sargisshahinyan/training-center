@@ -186,7 +186,7 @@ class Groups {
 		}
 		
 		return new Promise((resolve) => {
-			connection.query(`SELECT id, name FROM ${table} LIMIT ?, ?`,
+			connection.query(`SELECT id, name FROM ${table} LIMIT ?, ? GROUP BY name`,
 				[config['offset'], config['limit']], function (err, groups) {
 					if(err) throw err;
 					

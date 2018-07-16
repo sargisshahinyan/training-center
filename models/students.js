@@ -25,7 +25,7 @@ class Students {
 		}
 		
 		return new Promise((resolve) => {
-			conn.query(`SELECT id, name, surname FROM ${STUDENTS_TABLE} WHERE archived LIKE ? LIMIT ?, ?`,
+			conn.query(`SELECT id, name, surname FROM ${STUDENTS_TABLE} WHERE archived LIKE ? LIMIT ?, ? GROUP BY name`,
 				[config['filter'], config['offset'], config['limit']], function (err, students) {
 					if(err) throw err;
 					
