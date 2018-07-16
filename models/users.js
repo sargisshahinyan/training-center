@@ -26,7 +26,7 @@ class Users {
 		}
 		
 		return new Promise((resolve) => {
-			conn.query(`SELECT id, name, surname FROM ${table} WHERE privilege LIKE ? LIMIT ?, ? ORDER BY name`,
+			conn.query(`SELECT id, name, surname FROM ${table} WHERE privilege LIKE ? ORDER BY name LIMIT ?, ?`,
 				[config['privilege'], config['offset'], config['limit']], function (err, users) {
 					if(err) throw err;
 					
