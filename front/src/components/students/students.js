@@ -182,8 +182,8 @@ export default class Students extends React.Component {
 		const studentStateAction = this.state.studentData.archived ? 'Activate' : 'Archive';
 		const students = this.state.students
 			.filter(student => !this.state.searchText || student.name.toLowerCase().startsWith(this.state.searchText.toLowerCase()) || student.surname.toLowerCase().startsWith(this.state.searchText.toLowerCase()))
-			.map(student => (
-				<ListGroupItem onClick={this.editStudent} tag="a" href="#" key={student.id} data-id={student.id}>{`${student.name} ${student.surname}`}</ListGroupItem>
+			.map((student, i) => (
+				<ListGroupItem onClick={this.editStudent} tag="a" href="#" key={student.id} data-id={student.id}>{`${i + 1}. ${student.name} ${student.surname}`}</ListGroupItem>
 			));
 		
 		return (
@@ -203,6 +203,9 @@ export default class Students extends React.Component {
 				<FormGroup className="search">
 					<Input value={this.state.searchText} onChange={e => this.setState({ searchText: e.target.value })} type="text" placeholder="Search"/>
 				</FormGroup>
+				<div className="rows-count">
+					Students count {students.length}
+				</div>
 				<ListGroup className="students-list">
 					{students}
 				</ListGroup>

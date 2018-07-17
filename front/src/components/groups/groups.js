@@ -264,8 +264,11 @@ export default class Groups extends React.Component {
 	render() {
 		return <React.Fragment>
 			<Button className="add-button" color="primary" onClick={this.toggleForm}>Add new group</Button>
+			<div className="rows-count">
+				Groups count {this.state.groups.length}
+			</div>
 			<ListGroup className="groups-list">
-				{this.state.groups.map(group => <ListGroupItem onClick={this.editGroup} tag="a" href="#" key={group.id} data-id={group.id}>{`${group.name}`}</ListGroupItem>)}
+				{this.state.groups.map((group, i) => <ListGroupItem onClick={this.editGroup} tag="a" href="#" key={group.id} data-id={group.id}>{`${i + 1}. ${group.name}`}</ListGroupItem>)}
 			</ListGroup>
 			
 			<Modal isOpen={this.state.groupForm} toggle={this.toggleForm} className={'modal-lg'}>

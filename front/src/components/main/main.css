@@ -8,3 +8,9 @@ main {
     padding-top: 15px;
     padding-bottom: 15px;
 }
+
+.rows-count {
+    margin: 30px 0;
+    font-size: 25px;
+    font-weight: bold;
+}

@@ -1,6 +1,6 @@
 const connection = require('./connection');
 
-const table = '`groups`';
+const GROUPS_TABLE = '`groups`';
 
 function categorizeStudents(allGroups) {
 	return allGroups.reduce((groups, item) => {
@@ -143,19 +143,19 @@ class Groups {
 		return new Promise(function (resolve) {
 			connection.query(`
 				SELECT
-				${table}.id, ${table}.name, subjectId, ${table}.userId,
+				${GROUPS_TABLE}.id, ${GROUPS_TABLE}.name, subjectId, ${GROUPS_TABLE}.userId,
 				weekDays.id as weekDayId, startsAt, weekDays.name as weekDay,
 				subjects.name AS subjectName,
 				users.name as userName ,users.surname as userSurname,
 				students.id AS studentId, students.name as studentName, students.surname as studentSurname, students.phone as studentPhone
-				FROM ${table}
-				JOIN subjects ON ${table}.subjectId = subjects.id
-				JOIN users ON ${table}.userId = users.id
-				JOIN studentsGroups ON ${table}.id = studentsGroups.groupId
-				JOIN groupDays ON groupDays.groupId = ${table}.id
+				FROM ${GROUPS_TABLE}
+				JOIN subjects ON ${GROUPS_TABLE}.subjectId = subjects.id
+				JOIN users ON ${GROUPS_TABLE}.userId = users.id
+				JOIN studentsGroups ON ${GROUPS_TABLE}.id = studentsGroups.groupId
+				JOIN groupDays ON groupDays.groupId = ${GROUPS_TABLE}.id
 				JOIN weekDays ON groupDays.weekDayId = weekDays.id
 				JOIN students ON studentsGroups.studentId = students.id
-				WHERE ${table}.userId LIKE ?
+				WHERE ${GROUPS_TABLE}.userId LIKE ?
 			`, [userId], (err, result) => {
 				if(err) throw err;
 				
@@ -186,7 +186,7 @@ class Groups {
 		}
 		
 		return new Promise((resolve) => {
-			connection.query(`SELECT id, name FROM ${table} ORDER BY name LIMIT ?, ?`,
+			connection.query(`SELECT id, name FROM ${GROUPS_TABLE} ORDER BY name LIMIT ?, ?`,
 				[config['offset'], config['limit']], function (err, groups) {
 					if(err) throw err;
 					
@@ -197,7 +197,7 @@ class Groups {
 	
 	static getGroup(id){
 		return new Promise((resolve) => {
-			connection.query(`SELECT * FROM ${table} WHERE id = ?`, [id], (err, groups) => {
+			connection.query(`SELECT * FROM ${GROUPS_TABLE} WHERE id = ?`, [id], (err, groups) => {
 				if(err) throw err;
 				
 				let group = groups[0] || null;
@@ -242,7 +242,7 @@ class Groups {
 			fields.forEach(field => insertData[field] = data[field]);
 			
 			checkExistingGroupsCount(data).then(() => {
-				connection.query(`INSERT INTO ${table} SET ?`, insertData, (err, res) => {
+				connection.query(`INSERT INTO ${GROUPS_TABLE} SET ?`, insertData, (err, res) => {
 					if(err) throw err;
 					
 					const groupId = res.insertId;
@@ -278,7 +278,7 @@ class Groups {
 			fields.forEach(field => insertData[field] = data[field]);
 			
 			checkExistingGroupsCount(data, id).then(() => {
-				connection.query(`UPDATE ${table} SET ? WHERE id = ?`, [insertData, id], (err) => {
+				connection.query(`UPDATE ${GROUPS_TABLE} SET ? WHERE id = ?`, [insertData, id], (err) => {
 					if(err) throw err;
 					
 					connection.query('DELETE FROM studentsGroups WHERE groupId = ?', [id], (err) => {
@@ -315,7 +315,7 @@ class Groups {
 	
 	static deleteGroup(id) {
 		return new Promise((resolve) => {
-			connection.query(`DELETE FROM ${table} WHERE id = ?`, [id], (err) => {
+			connection.query(`DELETE FROM ${GROUPS_TABLE} WHERE id = ?`, [id], (err) => {
 				if(err) throw err;
 				
 				resolve(id);

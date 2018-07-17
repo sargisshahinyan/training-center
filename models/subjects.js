@@ -1,6 +1,6 @@
-const conn = require('./connection');
+const connection = require('./connection');
 
-const table = '`subjects`';
+const SUBJECTS_TABLE = '`subjects`';
 
 class Subjects {
 	static getSubjects(config = {}) {
@@ -22,7 +22,7 @@ class Subjects {
 		}
 		
 		return new Promise((resolve) => {
-			conn.query(`SELECT id, name FROM ${table} LIMIT ?, ?`,
+			connection.query(`SELECT id, name FROM ${SUBJECTS_TABLE} LIMIT ?, ?`,
 				[config['offset'], config['limit']], function (err, subjects) {
 					if(err) throw err;
 					
@@ -33,7 +33,7 @@ class Subjects {
 	
 	static getSubject(id){
 		return new Promise((resolve) => {
-			conn.query(`SELECT * FROM ${table} WHERE id = ?`, [id], (err, subjects) => {
+			connection.query(`SELECT * FROM ${SUBJECTS_TABLE} WHERE id = ?`, [id], (err, subjects) => {
 				if(err) throw err;
 				
 				let subject = subjects[0] || null;
@@ -49,7 +49,7 @@ class Subjects {
 	
 	static addSubject(data) {
 		return new Promise((resolve, reject) => {
-			conn.query(`INSERT INTO ${table} SET ?`, data, (err, res) => {
+			connection.query(`INSERT INTO ${SUBJECTS_TABLE} SET ?`, data, (err, res) => {
 				if(err) throw err;
 				
 				Subjects.getSubject(res.insertId).then(subject => {
@@ -63,7 +63,7 @@ class Subjects {
 	
 	static editSubject(id, data) {
 		return new Promise((resolve, reject) => {
-			conn.query(`UPDATE ${table} SET ? WHERE id = ?`, [data, id], (err) => {
+			connection.query(`UPDATE ${SUBJECTS_TABLE} SET ? WHERE id = ?`, [data, id], (err) => {
 				if(err) throw err;
 				
 				Subjects.getSubject(id).then(subject => {
@@ -77,7 +77,7 @@ class Subjects {
 	
 	static deleteSubject(id) {
 		return new Promise((resolve) => {
-			conn.query(`DELETE FROM ${table} WHERE id = ?`, [id], (err) => {
+			connection.query(`DELETE FROM ${SUBJECTS_TABLE} WHERE id = ?`, [id], (err) => {
 				if(err) throw err;
 				
 				resolve(id);

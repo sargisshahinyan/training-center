@@ -1,9 +1,9 @@
 const sha = require("sha256");
 const tokenGenerator = require("rand-token");
-const conn = require('./connection');
+const connection = require('./connection');
 const expDays = 5;
 
-const table = '`users`';
+const USERS_TABLE = '`users`';
 
 class Users {
 	static getUsers(config = {}) {
@@ -26,7 +26,7 @@ class Users {
 		}
 		
 		return new Promise((resolve) => {
-			conn.query(`SELECT id, name, surname FROM ${table} WHERE privilege LIKE ? ORDER BY name LIMIT ?, ?`,
+			connection.query(`SELECT id, name, surname FROM ${USERS_TABLE} WHERE privilege LIKE ? ORDER BY name LIMIT ?, ?`,
 				[config['privilege'], config['offset'], config['limit']], function (err, users) {
 					if(err) throw err;
 					
@@ -37,7 +37,7 @@ class Users {
 	
 	static getUser(token = ''){
 		return new Promise((resolve, reject) => {
-			conn.query('SELECT * FROM tokens WHERE token = ?', [token], (err, rows) => {
+			connection.query('SELECT * FROM tokens WHERE token = ?', [token], (err, rows) => {
 				if(err) throw err;
 				
 				if(!rows[0]) {
@@ -68,7 +68,7 @@ class Users {
 	
 	static getUserById(id) {
 		return new Promise((resolve) => {
-			conn.query(`SELECT * FROM ${table} WHERE id = ?`, [id], (err, users) => {
+			connection.query(`SELECT * FROM ${USERS_TABLE} WHERE id = ?`, [id], (err, users) => {
 				if(err) throw err;
 				
 				let user = users[0] || null;
@@ -86,7 +86,7 @@ class Users {
 		password = sha(password);
 		
 		return new Promise((resolve, reject) => {
-			conn.query(`SELECT id, privilege FROM ${table} WHERE username = ? AND password = ?`, [username, password], (err, rows) => {
+			connection.query(`SELECT id, privilege FROM ${USERS_TABLE} WHERE username = ? AND password = ?`, [username, password], (err, rows) => {
 				if(err) {
 					console.error(err);
 					return;
@@ -107,7 +107,7 @@ class Users {
 		date.setDate(date.getDate() + expDays);
 		
 		return new Promise((resolve, reject) => {
-			conn.query(`INSERT INTO tokens SET ?`, {
+			connection.query(`INSERT INTO tokens SET ?`, {
 				userId: id,
 				token: token,
 				expDate: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
@@ -117,7 +117,7 @@ class Users {
 	
 	static unsetUserToken(token) {
 		return new Promise((resolve) => {
-			conn.query(`DELETE FROM tokens WHERE token = ?`, [token], err => {
+			connection.query(`DELETE FROM tokens WHERE token = ?`, [token], err => {
 				if(err) throw err;
 				
 				resolve();
@@ -129,7 +129,7 @@ class Users {
 		data.password = sha(data.password);
 		
 		return new Promise((resolve, reject) => {
-			conn.query(`INSERT INTO ${table} SET ?`, data, (err, res) => {
+			connection.query(`INSERT INTO ${USERS_TABLE} SET ?`, data, (err, res) => {
 				if(err) throw err;
 				
 				Users.getUserById(res.insertId).then(user => {
@@ -145,7 +145,7 @@ class Users {
 		data.password = sha(data.password);
 		
 		return new Promise((resolve, reject) => {
-			conn.query(`UPDATE ${table} SET ? WHERE id = ?`, [data, id], (err) => {
+			connection.query(`UPDATE ${USERS_TABLE} SET ? WHERE id = ?`, [data, id], (err) => {
 				if(err) throw err;
 				
 				Users.getUserById(id).then(user => {
@@ -159,7 +159,7 @@ class Users {
 	
 	static deleteUser(id) {
 		return new Promise((resolve) => {
-			conn.query(`DELETE FROM ${table} WHERE id = ?`, [id], (err) => {
+			connection.query(`DELETE FROM ${USERS_TABLE} WHERE id = ?`, [id], (err) => {
 				if(err) throw err;
 				
 				resolve(id);

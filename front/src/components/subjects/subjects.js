@@ -145,8 +145,11 @@ export default class Subjects extends React.Component {
 	render() {
 		return <React.Fragment>
 			<Button className="add-button" color="primary" onClick={this.toggleForm}>Add new subject</Button>
+			<div className="rows-count">
+				Subjects count {this.state.subjects.length}
+			</div>
 			<ListGroup className="subjects-list">
-				{this.state.subjects.map(subject => <ListGroupItem onClick={this.editSubject} tag="a" href="#" key={subject.id} data-id={subject.id}>{`${subject.name}`}</ListGroupItem>)}
+				{this.state.subjects.map((subject, i) => <ListGroupItem onClick={this.editSubject} tag="a" href="#" key={subject.id} data-id={subject.id}>{`${i + 1}. ${subject.name}`}</ListGroupItem>)}
 			</ListGroup>
 			
 			<Modal isOpen={this.state.subjectForm} toggle={this.toggleForm} className={'modal-lg'}>
