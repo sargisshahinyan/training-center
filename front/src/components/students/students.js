@@ -22,7 +22,7 @@ import InputMask from 'react-input-mask';
 import StudentsModel from "../../models/students";
 
 export default class Students extends React.Component {
-	fields = ['name', 'surname', 'phone'];
+	fields = ['name', 'surname', 'remark', 'phone'];
 	
 	constructor(props) {
 		super(props);
@@ -222,6 +222,10 @@ export default class Students extends React.Component {
 								<Input value={this.state.studentData.surname} onChange={e => this.collectState('surname', e.target.value)} type="text" name="surname" id="surname" placeholder="Surname" />
 							</FormGroup>
 							<FormGroup>
+								<Label for="remark">Remark</Label>
+								<Input value={this.state.studentData.remark} onChange={e => this.collectState('remark', e.target.value)} type="text" name="remark" id="remark" placeholder="Remark" />
+							</FormGroup>
+							<FormGroup>
 								<Label for="phone">Phone</Label>
 								<InputMask value={this.state.studentData.phone} onChange={e => this.collectState('phone', e.target.value)} mask="099-99-99-99" maskChar=" ">
 									{(props) => <Input {...props} type="text" name="phone" id="phone" placeholder="Phone" />}
@@ -251,14 +255,17 @@ export default class Students extends React.Component {
 	}
 	
 	collectData() {
-		const missedField = this.fields.find(field => !this.state.studentData[field]);
+		const missedField = this.fields.find(field => field !== 'remark' && !this.state.studentData[field]);
 		
 		if(missedField) {
 			this.toggleAlert(null, `${missedField.replace(/^./, l => l.toUpperCase())} is required`);
 			return;
 		}
 		
-		return {...this.state.studentData};
+		return {
+			...this.state.studentData,
+			remark: this.state.studentData.remark || ''
+		};
 	}
 	
 	collectState(key, value) {

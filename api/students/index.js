@@ -9,6 +9,7 @@ const helpers = require(APP_PATH + '/libs/helpers');
 
 // data for students
 const fields = ['name', 'surname', 'phone'];
+const optionalFields = ['remark'];
 
 // middleware
 const authCheckingMiddleware = require(`${APP_PATH}/middlewares/authCheckingMiddleware`);
@@ -65,6 +66,11 @@ router.post('/', function (req, res) {
 	const data = {};
 	
 	fields.forEach(field => data[field] = req.body[field]);
+	optionalFields.forEach(field => {
+		if(field in req.body) {
+			data[field] = req.body[field];
+		}
+	});
 	
 	Students.addStudent(data).then(student => {
 		res.status(201).json({
@@ -98,6 +104,11 @@ router.put('/:id', function (req, res) {
 	const data = {};
 	
 	fields.forEach(field => data[field] = req.body[field]);
+	optionalFields.forEach(field => {
+		if(field in req.body) {
+			data[field] = req.body[field];
+		}
+	});
 	
 	if('archived' in req.body && !isNaN(req.body.archived)) {
 		data.archived = req.body.archived;
