@@ -7,20 +7,19 @@
     "postinstall": "node node_modules/db-migrate/bin/db-migrate up -c 9"
   },
   "dependencies": {
-    "bootstrap": "^4.1.1",
+    "bootstrap": "^4.2.1",
     "cookie-parser": "~1.4.3",
-    "cors": "^2.8.4",
-    "db-migrate": "^0.11.1",
+    "cors": "^2.8.5",
+    "db-migrate": "^0.11.5",
     "db-migrate-mysql": "^1.1.10",
     "debug": "~2.6.9",
     "email-validator": "^2.0.4",
-    "express": "~4.16.0",
+    "express": "^4.16.4",
     "http-errors": "~1.6.2",
     "is-image": "^2.0.0",
     "morgan": "^1.9.1",
-    "mysql": "^2.15.0",
+    "mysql": "^2.16.0",
     "rand-token": "^0.4.0",
-    "react-input-mask": "^2.0.1",
     "sha256": "^0.2.0"
   }
 }
