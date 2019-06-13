@@ -38,6 +38,7 @@ function modifyOptions(options) {
 					break;
 			}
 		} else {
+			options.headers = {};
 			options.headers['Content-Type'] = 'application/json';
 			options.body = JSON.stringify(options.body);
 		}
